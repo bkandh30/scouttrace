@@ -20,8 +20,8 @@ export function SignupForm() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-xl pt-2 pb-1">Create an account</CardTitle>
-        <CardDescription className="pb-2">
+        <CardTitle className="text-xl pt-1">Create an account</CardTitle>
+        <CardDescription className="pb-1">
           Enter your information below to create your account
         </CardDescription>
       </CardHeader>
@@ -29,11 +29,11 @@ export function SignupForm() {
         <form>
           <FieldGroup>
             <Field>
-              <Field className="px-0.5 pb-2 pt-1">
+              <Field className="px-0.5 pb-2">
                 <FieldLabel htmlFor="name">Full Name</FieldLabel>
                 <Input id="name" type="text" placeholder="John Doe" required />
               </Field>
-              <Field className="px-0.5 pb-2 pt-1">
+              <Field className="px-0.5 pb-2">
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
@@ -42,21 +42,18 @@ export function SignupForm() {
                   required
                 />
               </Field>
-              <Field className="px-0.5 pb-2 pt-1">
+              <Field className="px-0.5 pb-2">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input id="password" type="password" required />
                 <FieldDescription>
                   Must be at least 8 characters long.
                 </FieldDescription>
               </Field>
-              <Field className="px-0.5 pb-2 pt-1">
+              <Field className="px-0.5 pb-2">
                 <FieldLabel htmlFor="confirm-password">
                   Confirm Password
                 </FieldLabel>
                 <Input id="confirm-password" type="password" required />
-                <FieldDescription>
-                  Please confirm your password.
-                </FieldDescription>
               </Field>
             </Field>
             <Field className="pb-2">
