@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Link } from '@tanstack/react-router'
 
 import ThemeToggle from './ThemeToggle'
-import { Button } from '../ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { cn } from '#/lib/utils'
 
 export function Navbar() {
@@ -42,11 +42,11 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-2">
-          <Link to="/login">
-            <Button variant="ghost">Login</Button>
+          <Link to="/login" className={buttonVariants({ variant: 'ghost' })}>
+            Login
           </Link>
-          <Link to="/signup">
-            <Button>Get Started</Button>
+          <Link to="/signup" className={buttonVariants()}>
+            Get Started
           </Link>
           <ThemeToggle />
         </div>
