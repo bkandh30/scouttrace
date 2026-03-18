@@ -1,22 +1,49 @@
-import ThemeToggle from "./ThemeToggle"
-import { Button } from "../ui/button"
+'use client'
+
+import * as React from 'react'
+import { Link } from '@tanstack/react-router'
+
+import ThemeToggle from './ThemeToggle'
+import { Button } from '../ui/button'
+import { cn } from '#/lib/utils'
 
 export function Navbar() {
+  const [scrolled, setScrolled] = React.useState(false)
+
+  React.useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 10)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <div className="flex shrink-0 items-center gap-3">
+    <nav
+      className={cn(
+        'sticky top-0 z-50 border-b bg-background/95 backdrop-blur transition-shadow duration-300 supports-[backdrop-filter]:bg-background/80',
+        scrolled ? 'shadow-md' : 'shadow-none',
+      )}
+    >
+      <div className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-4 px-4 py-2">
+        {/* Brand */}
+        <Link
+          to="/"
+          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
+        >
           <img
             src="scouttrace.png"
             alt="ScoutTrace Logo"
-            className="size-16 rounded-md object-cover"
+            className="size-12 rounded-md object-cover"
           />
-          <h1 className="text-lg font-semibold tracking-tight">ScoutTrace</h1>
-        </div>
+          <span className="text-xl font-bold tracking-tight">ScoutTrace</span>
+        </Link>
 
-        <div className="flex items-center justify-end gap-2 sm:gap-3">
-          <Button variant="secondary">Login</Button>
-          <Button variant="secondary">Get Started</Button>
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-2">
+          <Button variant="ghost">Login</Button>
+          <Button>Get Started</Button>
           <ThemeToggle />
         </div>
       </div>
