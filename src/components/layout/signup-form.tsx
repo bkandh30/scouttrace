@@ -15,12 +15,14 @@ import {
   FieldError,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { signupSchema } from '@/schemas/auth'
 import { toast } from 'sonner'
+import { authClient } from '@/lib/auth-client'
 
 export function SignupForm() {
+  const navigate = useNavigate()
   const form = useForm({
     defaultValues: {
       name: "",
@@ -33,19 +35,21 @@ export function SignupForm() {
       onBlur: signupSchema,
     },
     onSubmit: async ({ value }) => {
-      toast("You submitted the following values:", {
-        description: (
-          <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-            <code>{JSON.stringify(value, null, 2)}</code>
-          </pre>
-        ),
-        position: "bottom-right",
-        classNames: {
-          content: "flex flex-col gap-2",
-        },
-        style: {
-          "--border-radius": "calc(var(--radius)  + 4px)",
-        } as React.CSSProperties,
+      await authClient.signUp.email({
+        name: value.name,
+        email: value.email,
+        password: value.password,
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success('Account created successfully'),
+            navigate({
+              to: '/',
+            })
+          },
+          onError: ({ error }) => {
+            toast.error(error.message)
+          }
+        }
       })
     },
   })
