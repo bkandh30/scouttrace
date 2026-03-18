@@ -39,7 +39,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <Toaster closeButton={true} position="bottom-right" />
+        <Toaster closeButton={true} position="bottom-center" />
         <TanStackDevtools
           config={{
             position: 'bottom-right',

@@ -6,8 +6,31 @@ import { Link } from '@tanstack/react-router'
 import ThemeToggle from './ThemeToggle'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '#/lib/utils'
+import { authClient } from '@/lib/auth-client'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { useNavigate } from '@tanstack/react-router'
 
 export function Navbar() {
+  const { data: session, isPending } = authClient.useSession()
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success('Logged out successfully'),
+          navigate({
+            to: '/',
+          })
+        },
+        onError: ({ error }) => {
+          toast.error(error.message)
+        }
+      }
+    })
+  }
+
   const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => {
@@ -42,13 +65,24 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-2">
-          <Link to="/login" className={buttonVariants({ variant: 'ghost' })}>
-            Login
-          </Link>
-          <Link to="/signup" className={buttonVariants()}>
-            Get Started
-          </Link>
           <ThemeToggle />
+          {isPending ? null : session ? (
+            <>
+              <Link to="/dashboard" className={buttonVariants({ variant: 'default' })}>
+                Dashboard
+              </Link>
+              <Button variant="secondary" onClick={handleSignOut}>Logout</Button>
+            </>
+          ): (
+            <>
+              <Link to="/login" className={buttonVariants({ variant: 'ghost' })}>
+                Login
+              </Link>
+              <Link to="/signup" className={buttonVariants({ variant: 'default' })}>
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
