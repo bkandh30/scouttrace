@@ -10,12 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoPrismaRouteImport } from './routes/demo/prisma'
+import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index'
+import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -28,33 +35,58 @@ const DemoPrismaRoute = DemoPrismaRouteImport.update({
   path: '/demo/prisma',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthSignupIndexRoute = AuthSignupIndexRouteImport.update({
+  id: '/signup/',
+  path: '/signup/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/prisma': typeof DemoPrismaRoute
+  '/login/': typeof AuthLoginIndexRoute
+  '/signup/': typeof AuthSignupIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/prisma': typeof DemoPrismaRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/signup': typeof AuthSignupIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/demo/prisma': typeof DemoPrismaRoute
+  '/_auth/login/': typeof AuthLoginIndexRoute
+  '/_auth/signup/': typeof AuthSignupIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/demo/prisma'
+  fullPaths: '/' | '/about' | '/demo/prisma' | '/login/' | '/signup/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/demo/prisma'
-  id: '__root__' | '/' | '/about' | '/demo/prisma'
+  to: '/' | '/about' | '/demo/prisma' | '/login' | '/signup'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/about'
+    | '/demo/prisma'
+    | '/_auth/login/'
+    | '/_auth/signup/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   DemoPrismaRoute: typeof DemoPrismaRoute
 }
@@ -66,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -82,11 +121,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoPrismaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/signup/': {
+      id: '/_auth/signup/'
+      path: '/signup'
+      fullPath: '/signup/'
+      preLoaderRoute: typeof AuthSignupIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/login/': {
+      id: '/_auth/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof AuthLoginIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthSignupIndexRoute: typeof AuthSignupIndexRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthSignupIndexRoute: AuthSignupIndexRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   DemoPrismaRoute: DemoPrismaRoute,
 }

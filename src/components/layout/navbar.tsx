@@ -42,8 +42,12 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-2">
-          <Button variant="ghost">Login</Button>
-          <Button>Get Started</Button>
+          <Link to="/login">
+            <Button variant="ghost">Login</Button>
+          </Link>
+          <Link to="/signup">
+            <Button>Get Started</Button>
+          </Link>
           <ThemeToggle />
         </div>
       </div>
