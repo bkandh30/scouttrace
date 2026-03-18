@@ -12,11 +12,42 @@ import {
   FieldGroup,
   FieldLabel,
   FieldSeparator,
+  FieldError,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Link } from '@tanstack/react-router'
+import { useForm } from '@tanstack/react-form'
+import { loginSchema } from '@/schemas/auth'
+import { toast } from 'sonner'
 
 export function LoginForm() {
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: {
+      onSubmit: loginSchema,
+      onBlur: loginSchema,
+    },
+    onSubmit: async ({ value }) => {
+      toast("You submitted the following values:", {
+        description: (
+          <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
+            <code>{JSON.stringify(value, null, 2)}</code>
+          </pre>
+        ),
+        position: "bottom-right",
+        classNames: {
+          content: "flex flex-col gap-2",
+        },
+        style: {
+          "--border-radius": "calc(var(--radius)  + 4px)",
+        } as React.CSSProperties,
+      })
+    },
+  })
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -53,30 +84,70 @@ export function LoginForm() {
               Or continue with
             </FieldSeparator>
             <Field>
-              <Field className="px-0.5 pb-2 pt-1">
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="john.doe@example.com"
-                  required
-                />
-              </Field>
-              <Field className="px-0.5 pb-2 pt-1">
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
-              </Field>
+              <form.Field
+                name="email"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid
+                  return (
+                    <Field data-invalid={isInvalid} className="px-0.5 pb-1 pt-1">
+                      <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="john.doe@example.com"
+                        type="email"
+                        autoComplete="off"
+                        required
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  )
+                }}
+              />
+              <form.Field
+                name="password"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid
+                  return (
+                    <Field data-invalid={isInvalid} className="px-0.5 pb-1">
+                      <div className="flex items-center">
+                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                        <a
+                          href="#"
+                          className="ml-auto text-sm underline-offset-4 text-muted-foreground hover:underline hover:text-foreground"
+                        >
+                          Forgot your password?
+                        </a>
+                      </div>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        type="password"
+                        autoComplete="off"
+                        required
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  )
+                }}
+              />
             </Field>
             <Field className="pb-2">
-              <Button type="submit" size="lg">
+              <Button type="submit" size="lg" className="mb-2">
                 Login
               </Button>
               <FieldDescription className="text-center p-2">
