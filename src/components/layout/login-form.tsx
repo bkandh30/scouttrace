@@ -57,7 +57,13 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
           <FieldGroup>
             <Field className="pb-2">
               <Button variant="outline" type="button" size="lg">
