@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { ChevronsUpDown, LogOut } from 'lucide-react'
 
 import {
   Avatar,
@@ -17,7 +10,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -29,17 +21,33 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
+import { useNavigate } from '@tanstack/react-router'
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+import { type NavUserProps } from '@/lib/types'
+
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          navigate({
+            to: '/',
+          })
+          toast.success('Logged out successfully')
+        },
+        onError: ({ error }) => {
+          toast.error(error.message)
+        }
+      }
+    })
+  }
+
+  const firstNameInitial = user.name.trim().charAt(0).toUpperCase()
 
   return (
     <SidebarMenu>
@@ -51,8 +59,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage 
+                  src={
+                    user.image ??
+                    `https://api.dicebear.com/9.x/glass/svg?seed=${user.name}`} alt={user.name} 
+                />
+                <AvatarFallback className="rounded-lg">{firstNameInitial}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -70,8 +82,14 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage 
+                    src={
+                      user.image ??
+                      `https://api.dicebear.com/9.x/glass/svg?seed=${user.name}`
+                    } 
+                    alt={user.name} 
+                  />
+                  <AvatarFallback className="rounded-lg">{firstNameInitial}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -79,30 +97,9 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>
