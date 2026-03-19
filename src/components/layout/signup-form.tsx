@@ -20,9 +20,12 @@ import { useForm } from '@tanstack/react-form'
 import { signupSchema } from '@/schemas/auth'
 import { toast } from 'sonner'
 import { authClient } from '@/lib/auth-client'
+import { useTransition } from 'react';
 
 export function SignupForm() {
   const navigate = useNavigate()
+  const [isPending, startTransition] = useTransition()
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -34,22 +37,24 @@ export function SignupForm() {
       onSubmit: signupSchema,
       onBlur: signupSchema,
     },
-    onSubmit: async ({ value }) => {
-      await authClient.signUp.email({
-        name: value.name,
-        email: value.email,
-        password: value.password,
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success('Account created successfully'),
-            navigate({
-              to: '/',
-            })
-          },
-          onError: ({ error }) => {
-            toast.error(error.message)
+    onSubmit: ({ value }) => {
+      startTransition(async () => {
+        await authClient.signUp.email({
+          name: value.name,
+          email: value.email,
+          password: value.password,
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success('Account created successfully'),
+              navigate({
+                to: '/',
+              })
+            },
+            onError: ({ error }) => {
+              toast.error(error.message)
+            }
           }
-        }
+        })
       })
     },
   })
@@ -179,8 +184,8 @@ export function SignupForm() {
               }}
             />
             <Field className="pb-2">
-              <Button type="submit" size="lg" className="mb-2">
-                Create Account
+              <Button type="submit" size="lg" className="mb-2" disabled={isPending}>
+                {isPending ? 'Creating...' : 'Create Account'}
               </Button>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
