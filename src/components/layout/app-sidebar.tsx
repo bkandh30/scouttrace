@@ -67,7 +67,7 @@ export function AppSidebar({ user }: NavUserProps) {
                   <img
                     src="/scouttrace.png"
                     alt="ScoutTrace Logo"
-                    className="size-12 rounded-md object-cover w-full h-full"
+                    className="rounded-md object-cover w-full h-full"
                   />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
