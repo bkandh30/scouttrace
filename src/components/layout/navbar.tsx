@@ -56,7 +56,7 @@ export function Navbar() {
           className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
         >
           <img
-            src="scouttrace.png"
+            src="/scouttrace.png"
             alt="ScoutTrace Logo"
             className="size-12 rounded-md object-cover"
           />

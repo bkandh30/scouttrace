@@ -65,7 +65,7 @@ export function AppSidebar({ user }: NavUserProps) {
               <Link to='/dashboard' className="flex items-center gap-3">
                 <div className="bg-accent-foreground text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <img
-                    src="scouttrace.png"
+                    src="/scouttrace.png"
                     alt="ScoutTrace Logo"
                     className="size-12 rounded-md object-cover w-full h-full"
                   />
