@@ -62,7 +62,10 @@ export function AppSidebar({ user }: NavUserProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to='/dashboard' className="flex items-center gap-3">
+              <Link
+                to='/dashboard'
+                className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
+              >
                 <div className="bg-accent-foreground text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <img
                     src="/scouttrace.png"
@@ -70,7 +73,7 @@ export function AppSidebar({ user }: NavUserProps) {
                     className="rounded-md object-cover w-full h-full"
                   />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="grid min-w-0 flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="font-medium text-primary-foreground font-bold">ScoutTrace</span>
                   <span className="text-xs text-muted-foreground">AI-Powered Knowledge Base</span>
                 </div>

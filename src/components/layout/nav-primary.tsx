@@ -18,7 +18,12 @@ export function NavPrimary({ items }: NavPrimaryProps) {
           {items.map((item, index) => {
             return (
               <SidebarMenuItem key={index}>
-                <SidebarMenuButton asChild size="lg">
+                <SidebarMenuButton
+                  asChild
+                  size="lg"
+                  tooltip={item.title}
+                  className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
+                >
                   <Link 
                     activeProps={{
                       'data-active': true,
@@ -27,7 +32,7 @@ export function NavPrimary({ items }: NavPrimaryProps) {
                     activeOptions={item.activeOptions}
                   >
                     <item.icon />
-                    <span>{item.title}</span>
+                    <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
