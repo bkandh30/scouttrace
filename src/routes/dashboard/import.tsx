@@ -3,14 +3,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Globe, LinkIcon } from 'lucide-react'
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from '@tanstack/react-form'
 import { importSchema, bulkImportSchema } from '@/schemas/import'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
-import { scrapeUrlFn } from '@/data/items'
+import { scrapeUrlFn, mapUrlFn, bulkScrapeUrlsFn, type BulkScrapeProgress } from '@/data/items'
 import { toast } from 'sonner'
+import { type SearchResultWeb } from '@mendable/firecrawl-js'
+import { Progress } from '@/components/ui/progress'
 
 export const Route = createFileRoute('/dashboard/import')({
   component: RouteComponent,
@@ -18,6 +21,70 @@ export const Route = createFileRoute('/dashboard/import')({
 
 function RouteComponent() {
   const [isPending, startTransition] = useTransition()
+  const [bulkIsPending, startBulkTransition] = useTransition()
+
+  const [discoveredUrls, setDiscoveredUrls] = useState<Array<SearchResultWeb>>([])
+  const [selectedUrls, setSelectedUrls] = useState<Set<string>>(new Set())
+  const [progress, setProgress] = useState<BulkScrapeProgress | null>(null)
+
+  function handleSelectAll() {
+    if (selectedUrls.size === discoveredUrls.length) {
+      setSelectedUrls(new Set())
+    } else {
+      setSelectedUrls(new Set(discoveredUrls.map((link) => link.url)))
+    }
+  }
+
+  function handleToggleUrl(url: string) {
+    const newSelectedUrls = new Set(selectedUrls)
+
+    if (newSelectedUrls.has(url)) {
+      newSelectedUrls.delete(url)
+    } else {
+      newSelectedUrls.add(url)
+    }
+
+    setSelectedUrls(newSelectedUrls)
+  }
+
+  function handleBulkImport() {
+    startBulkTransition(async () => {
+      if (selectedUrls.size === 0) {
+        toast.error('Please select at least one URL to import')
+        return
+      }
+
+      setProgress({
+        completed: 0,
+        total: selectedUrls.size,
+        url: '',
+        status: 'success',
+      })
+
+      let successCount = 0;
+      let failedCount = 0;
+
+      for await (const update of await bulkScrapeUrlsFn({
+        data: { urls: Array.from(selectedUrls) },
+      })) {
+        setProgress(update)
+
+        if (update.status === 'success') {
+          successCount++;
+        } else {
+          failedCount++;
+        }
+      }
+
+      setProgress(null)
+
+      if (failedCount > 0) {
+        toast.error(`Failed to scrape ${failedCount} URLs. Please try again.`)
+      } else {
+        toast.success(`Successfully scraped ${successCount} URLs!`)
+      }
+    })
+  }
   
   const form = useForm({
     defaultValues: {
@@ -46,6 +113,9 @@ function RouteComponent() {
     onSubmit: ({ value }) => {
       startTransition(async () => {
         console.log(value)
+        const urls = await mapUrlFn({ data: value })
+
+        setDiscoveredUrls(urls)
       })
     },
   })
@@ -219,6 +289,91 @@ function RouteComponent() {
                     </Button>
                   </FieldGroup>
                 </form>
+
+                {/* Discovered URLs */}
+                {discoveredUrls.length > 0 && (
+                  <div className="space-y-4 pt-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-base font-semibold">
+                        Found {discoveredUrls.length} URLs
+                      </p>
+
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={handleSelectAll}
+                      >
+                        {selectedUrls.size === discoveredUrls.length
+                          ? 'Deselect All'
+                          : 'Select All'
+                        }
+                      </Button>
+                    </div>
+
+                    <div className="max-h-80 space-y-2 overflow-y-auto rounded-md border p-4">
+                      {discoveredUrls.map((link) => (
+                        <label 
+                          key={link.url}
+                          className="hover:bg-muted/50 flex cursor-pointer items-start gap-3 rounded-md p-2"
+                        >
+                          <Checkbox 
+                            checked={selectedUrls.has(link.url)}
+                            onCheckedChange={() => handleToggleUrl(link.url)}
+                            className="mt-0.5"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium">
+                              {link.title ?? 'Title not found'}
+                            </p>
+
+                            <p className="text-muted-foreground truncate text-xs">
+                              {link.description ??
+                                'Description not found'}
+                            </p>
+                            <p className="text-muted-foreground truncate text-xs">
+                              {link.url}
+                            </p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+
+                    {progress && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Scraping {progress.completed} of {progress.total} URLs
+                          </span>
+                          <span className="font-medium">
+                            {Math.round(progress.completed / progress.total) * 100}
+                          </span>
+                        </div>
+                        <Progress 
+                          value= {(progress.completed / progress.total) * 100} 
+                        />
+                      </div>
+                    )}
+
+                    <Button
+                      disabled={bulkIsPending}
+                      onClick={handleBulkImport}
+                      className="w-full"
+                      type="button"
+                    >
+                      {bulkIsPending ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          {progress
+                            ? `Scraping ${progress.completed} of ${progress.total} URLs`
+                            : 'Starting bulk scrape...'
+                          }
+                        </>
+                      ): (
+                        `Import ${selectedUrls.size} URLs`
+                      )}
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
