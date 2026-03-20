@@ -10,8 +10,8 @@ export const bulkImportSchema = z.object({
 })
 
 export const extractSchema = z.object({
-    author: z.string().nullable(),
-    publishedAt: z.string().nullable(),
+    author: z.string().nullable().optional(),
+    publishedAt: z.string().nullable().optional(),
 })
 
 export const searchSchema = z.object({
