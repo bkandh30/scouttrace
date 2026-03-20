@@ -4,6 +4,7 @@ import { importSchema, extractSchema } from '@/schemas/import'
 import { prisma } from '@/db'
 import { authFnMiddleware } from '@/middleware/auth'
 import z from 'zod'
+import { bulkImportSchema } from '@/schemas/import'
 
 export const scrapeUrlFn = createServerFn({ method: 'POST' })
     .middleware([authFnMiddleware])
@@ -71,4 +72,21 @@ export const scrapeUrlFn = createServerFn({ method: 'POST' })
             })
             return failedItem;
         }
+    })
+
+
+export const mapUrlFn = createServerFn({ method: 'POST' })
+    .middleware([authFnMiddleware])
+    .inputValidator(bulkImportSchema)
+    .handler(async ({ data }) => {
+        const result = await firecrawl.map(data.url, {
+            limit: 10,
+            search: data.search,
+            location: {
+                country: 'US',
+                languages: ['en'],
+            },
+        })
+
+        return result.links;
     })
