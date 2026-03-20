@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import { scrapeUrlFn } from '@/data/items'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/dashboard/import')({
   component: RouteComponent,
@@ -29,6 +30,7 @@ function RouteComponent() {
       startTransition(async () => {
         console.log(value)
         await scrapeUrlFn({ data: value })
+        toast.success('Content scraped successfully!')
       })
     },
   })
