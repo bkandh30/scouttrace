@@ -4,38 +4,46 @@ import { openrouter } from '@/lib/openrouter'
 import { streamText } from 'ai'
 
 export const Route = createFileRoute('/api/ai/summary')({
-  server: {
+    server: {
     handlers: {
         POST: async ({ request, context }) => {
-            const { itemId, prompt } = await request.json()
-
-            if (!itemId || !prompt) {
-                return new Response('Missing prompt or itemId', { status: 400 })
-            }
-
-            const item = await prisma.savedItem.findUnique({
-                where: {
-                    id: itemId,
-                    userId: context?.session.user.id,
-                }
+            const session = context?.session
+            if (!session?.user?.id) {
+            return new Response('Unauthorized action. Please login first.', {
+                status: 401,
             })
-            
-            if (!item) {
-                return new Response('Item not found', { status: 404 })
-            }
-
-            const result = streamText({
-                model: openrouter.chat('openai/gpt-oss-120b:free'),
-                system: `You are a helpful assistant that creates concise, informative summaries of web content.
-                            Your summaries should:
-                            - Be 2-3 paragraphs long
-                            - Capture the main points and key takeaways
-                            - Be written in a clear, professional tone`,
-                prompt: `Please summarize the following content:\n\n${prompt}`,
-            })
-
-            return result.toTextStreamResponse()
         }
-    }
-  }
+
+        const { itemId, prompt } = await request.json()
+        if (!itemId || !prompt) {
+            return new Response('Missing prompt or itemId', { status: 400 })
+        }
+
+        const item = await prisma.savedItem.findUnique({
+            where: {
+                id: itemId,
+                userId: context?.session.user.id,
+            },
+        })
+
+        if (!item) {
+            return new Response('Item not found.', { status: 404 })
+        }
+
+        const result = streamText({
+            model: openrouter.chat('google/gemma-3-27b-it:free'),
+            prompt: `You are a helpful assistant that creates concise, informative summaries of web content.
+                    Requirements:
+                    - Be 2-3 paragraphs long
+                    - Capture the main points and key takeaways
+                    - Use a clear, professional tone
+
+                    Content to summarize: 
+                    ${prompt}`,
+        })
+
+        return result.toTextStreamResponse()
+        },
+        },
+    },
 })
