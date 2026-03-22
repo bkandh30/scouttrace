@@ -1,10 +1,10 @@
 import { createServerFn } from '@tanstack/react-start'
 import { firecrawl } from '@/lib/firecrawl'
-import { importSchema, extractSchema } from '@/schemas/import'
+import { bulkImportSchema, importSchema, extractSchema } from '@/schemas/import'
+import type { ExtractData } from '@/schemas/import'
 import { prisma } from '@/db'
 import { authFnMiddleware } from '@/middleware/auth'
 import z from 'zod'
-import { bulkImportSchema } from '@/schemas/import'
 import { notFound } from '@tanstack/react-router'
 import { openrouter } from '@/lib/openrouter'
 import { generateText } from 'ai'
@@ -77,7 +77,6 @@ export const scrapeUrlFn = createServerFn({ method: 'POST' })
         }
     })
 
-
 export const mapUrlFn = createServerFn({ method: 'POST' })
     .middleware([authFnMiddleware])
     .inputValidator(bulkImportSchema)
@@ -138,7 +137,7 @@ export const bulkScrapeUrlsFn = createServerFn({ method: 'POST' })
                     proxy: 'auto',
                 })
 
-                const jsonData = result.json as z.infer<typeof extractSchema>;
+                const jsonData = result.json as ExtractData;
 
                 let publishedAt = null;
                 if (jsonData.publishedAt) {
@@ -218,8 +217,27 @@ export const getItemByIdFn = createServerFn({ method: 'GET' })
         return item
     })
 
+async function generateTagsFromSummary(summary: string) {
+    const { text } = await generateText({
+        model: openrouter.chat('z-ai/glm-4.5-air:free'),
+        prompt: `You are a helpful assistant that extracts relevant tags from content summaries.
+                    Extract 3-5 short, relevant tags that categorize the content.
+                    Return ONLY a comma-separated list of tags, nothing else.
+                    Example: technology, programming, web development, javascript
 
-export const saveSummaryAndGenerateTagsFn = createServerFn({ method: 'POST' })
+                    Summary:
+                    ${summary}`,
+    })
+
+    return text
+        .split(',')
+        .map((tag) => tag.trim().toLowerCase())
+        .filter((tag) => tag.length > 0)
+        .filter((tag, index, tags) => tags.indexOf(tag) === index)
+        .slice(0, 5)
+}
+
+export const saveSummaryFn = createServerFn({ method: 'POST' })
     .middleware([authFnMiddleware])
     .inputValidator(
         z.object({
@@ -239,21 +257,6 @@ export const saveSummaryAndGenerateTagsFn = createServerFn({ method: 'POST' })
             throw notFound()
         }
 
-        const { text } = await generateText({
-            model: openrouter.chat('z-ai/glm-4.5-air:free'),
-            system: `You are a helpful assistant that extracts relevant tags from content summaries.
-                Extract 3-5 short, relevant tags that categorize the content.
-                Return ONLY a comma-separated list of tags, nothing else.
-                Example: technology, programming, web development, javascript`,
-            prompt: `Extract tags from this summary: \n\n${data.summary}`,
-        })
-
-        const tags = text
-            .split(',')
-            .map((tag) => tag.trim().toLowerCase())
-            .filter((tag) => tag.length > 0)
-            .slice(0, 5)
-
         const item = await prisma.savedItem.update({
             where: {
                 userId: context.session.user.id,
@@ -261,7 +264,40 @@ export const saveSummaryAndGenerateTagsFn = createServerFn({ method: 'POST' })
             },
             data: {
                 summary: data.summary,
-                tags: tags,
+            },
+        })
+
+        return item
+    })
+
+export const generateTagsForItemFn = createServerFn({ method: 'POST' })
+    .middleware([authFnMiddleware])
+    .inputValidator(z.object({ id: z.string() }))
+    .handler(async ({ context, data }) => {
+        const existing = await prisma.savedItem.findUnique({
+            where: {
+                id: data.id,
+                userId: context.session.user.id,
+            },
+        })
+
+        if (!existing) {
+            throw notFound()
+        }
+
+        if (!existing.summary?.trim()) {
+            throw new Error('Cannot generate tags without a summary')
+        }
+
+        const tags = await generateTagsFromSummary(existing.summary)
+
+        const item = await prisma.savedItem.update({
+            where: {
+                userId: context.session.user.id,
+                id: data.id,
+            },
+            data: {
+                tags,
             },
         })
 
