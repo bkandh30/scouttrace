@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { prisma } from '@/db'
+import { createDatabaseWakeupResponse, isDatabaseWakeupError } from '@/lib/database-errors'
 import { openrouter } from '@/lib/openrouter'
 import { streamText } from 'ai'
 
@@ -9,7 +10,7 @@ export const Route = createFileRoute('/api/ai/summary')({
         POST: async ({ request, context }) => {
             const session = context?.session
             if (!session?.user?.id) {
-            return new Response('Unauthorized action. Please login first.', {
+                return new Response('Unauthorized action. Please login first.', {
                 status: 401,
             })
         }
@@ -19,12 +20,21 @@ export const Route = createFileRoute('/api/ai/summary')({
             return new Response('Missing prompt or itemId', { status: 400 })
         }
 
-        const item = await prisma.savedItem.findUnique({
-            where: {
+        let item
+
+        try {
+            item = await prisma.savedItem.findUnique({
+              where: {
                 id: itemId,
                 userId: context?.session.user.id,
-            },
-        })
+              },
+          })
+        } catch (error) {
+            if (isDatabaseWakeupError(error)) {
+                return createDatabaseWakeupResponse()
+            }
+            throw error
+        }
 
         if (!item) {
             return new Response('Item not found.', { status: 404 })
@@ -43,7 +53,7 @@ export const Route = createFileRoute('/api/ai/summary')({
         })
 
         return result.toTextStreamResponse()
-        },
-        },
-    },
+      }
+    }
+  }
 })
