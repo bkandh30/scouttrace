@@ -58,7 +58,7 @@ export function Navbar() {
           <img
             src="/scouttrace.png"
             alt="ScoutTrace Logo"
-            className="size-12 rounded-md object-cover"
+            className="size-8 rounded-md object-cover"
           />
           <span className="text-xl font-bold tracking-tight">ScoutTrace</span>
         </Link>
