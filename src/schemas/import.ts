@@ -14,6 +14,8 @@ export const extractSchema = z.object({
     publishedAt: z.string().nullable().optional(),
 })
 
+export type ExtractData = z.infer<typeof extractSchema>
+
 export const searchSchema = z.object({
     query: z.string().min(1),
 })
