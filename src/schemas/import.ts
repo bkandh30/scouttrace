@@ -1,3 +1,4 @@
+import { ItemStatus } from '#/generated/prisma/enums'
 import z from 'zod'
 
 export const importSchema = z.object({
@@ -18,4 +19,9 @@ export type ExtractData = z.infer<typeof extractSchema>
 
 export const searchSchema = z.object({
     query: z.string().min(1),
+})
+
+export const itemsSearchSchema = z.object({
+    q: z.string().default(''),
+    status: z.union([z.literal('all'), z.enum(ItemStatus)]).default('all'),
 })
