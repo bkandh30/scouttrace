@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // import * as React from "react"
 // import {
@@ -16,8 +16,8 @@
 
 import { BookmarkIcon, Compass, Import } from 'lucide-react'
 
-import { NavPrimary } from "#/components/layout/nav-primary"
-import { NavUser } from "@/components/layout/nav-user"
+import { NavPrimary } from '#/components/layout/nav-primary'
+import { NavUser } from '@/components/layout/nav-user'
 
 import {
   Sidebar,
@@ -28,10 +28,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from "@/components/ui/sidebar"
-import { Link, linkOptions } from "@tanstack/react-router"
-import { type NavPrimaryProps } from "@/lib/types"
-import { type NavUserProps } from "@/lib/types"
+} from '@/components/ui/sidebar'
+import { Link, linkOptions } from '@tanstack/react-router'
+import { type NavPrimaryProps } from '@/lib/types'
 
 const navItems: NavPrimaryProps['items'] = linkOptions([
   {
@@ -54,7 +53,7 @@ const navItems: NavPrimaryProps['items'] = linkOptions([
   },
 ])
 
-export function AppSidebar({ user }: NavUserProps) {
+export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -63,7 +62,7 @@ export function AppSidebar({ user }: NavUserProps) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link
-                to='/dashboard'
+                to="/dashboard"
                 className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
               >
                 <div className="bg-foreground text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
@@ -74,8 +73,12 @@ export function AppSidebar({ user }: NavUserProps) {
                   />
                 </div>
                 <div className="grid min-w-0 flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="font-medium text-primary-foreground font-bold">ScoutTrace</span>
-                  <span className="text-xs text-muted-foreground">AI-Powered Knowledge Base</span>
+                  <span className="font-medium text-primary-foreground font-bold">
+                    ScoutTrace
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    AI-Powered Knowledge Base
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -87,7 +90,7 @@ export function AppSidebar({ user }: NavUserProps) {
         <NavPrimary items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
