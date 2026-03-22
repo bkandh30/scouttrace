@@ -8,6 +8,8 @@ import z from 'zod'
 import { notFound } from '@tanstack/react-router'
 import { openrouter } from '@/lib/openrouter'
 import { generateText } from 'ai'
+import { searchSchema } from '@/schemas/import'
+import type { SearchResultWeb } from '@mendable/firecrawl-js'
 
 export const scrapeUrlFn = createServerFn({ method: 'POST' })
     .middleware([authFnMiddleware])
@@ -302,4 +304,21 @@ export const generateTagsForItemFn = createServerFn({ method: 'POST' })
         })
 
         return item
+    })
+
+export const searchWebFn = createServerFn({ method: 'POST' })
+    .middleware([authFnMiddleware])
+    .inputValidator(searchSchema)
+    .handler(async ({ data }) => {
+        const result = await firecrawl.search(data.query, {
+                limit: 10,
+                location: 'US',
+                tbs: 'qdr:y',
+            })
+
+        return result.web?.map((item) => ({
+            url: (item as SearchResultWeb).url,
+            title: (item as SearchResultWeb).title,
+            description: (item as SearchResultWeb).description,
+        })) as SearchResultWeb[]
     })
