@@ -14,6 +14,7 @@ import z from 'zod'
 import { zodValidator } from '@tanstack/zod-adapter'
 import { useEffect, useState, Suspense, use } from 'react'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { makeTitle } from '@/lib/seo'
 
 const itemsSearchSchema = z.object({
     q: z.string().default(''),
@@ -26,6 +27,28 @@ export const Route = createFileRoute('/dashboard/items/')({
   component: RouteComponent,
   loader: () => ({ itemsPromise: getItemsFn() }),
   validateSearch: zodValidator(itemsSearchSchema),
+  head: () => ({
+    meta: [
+        { title: makeTitle('Saved Items') },
+        {
+            name: 'description',
+            content: 'Browse and manage your saved articles, bookmarks and content.',
+        },
+        { property: 'og:title', content: 'Saved Items' },
+        {
+            property: 'og:description',
+            content: 'Browse and manage your saved articles, bookmarks and content.',
+        },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: 'Saved Items' },
+        {
+            name: 'twitter:description',
+            content: 'Browse and manage your saved articles, bookmarks and content.',
+        },
+        { name: 'twitter:image', content: 'https://scouttrace.com/scouttrace.png' },
+    ]
+  })
 })
 
 function ItemsGridSkeleton() {
