@@ -7,11 +7,40 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 import { Card, CardContent } from '@/components/ui/card'
 import { MessageResponse } from '@/components/ai-elements/message'
 import { cn } from '@/lib/utils'
+import { makeTitle } from '@/lib/seo'
 
 
 export const Route = createFileRoute('/dashboard/items/$itemId')({
   component: RouteComponent,
   loader: ({ params }) => getItemByIdFn({ data: { id: params.itemId } }),
+  head: ({ loaderData }) => {
+    const title = makeTitle(loaderData?.title ?? 'Item Details')
+    const description =
+        loaderData?.summary ??
+        'View saved article details and AI-generated summary'
+    const image = loaderData?.ogImage
+
+    return {
+        meta: [
+            { title },
+            { name: 'description', content: description },
+            { property: 'og:title', content: title },
+            { property: 'og:description', content: description },
+            { property: 'og:type', content: 'article' },
+            ...(image ? [{ property: 'og:image', content: image }] : []),
+            {
+            name: 'twitter:card',
+            content: image ? 'summary_large_image' : 'summary',
+            },
+            { name: 'twitter:title', content: title },
+            { name: 'twitter:description', content: description },
+            ...(image ? [{ name: 'twitter:image', content: image }] : []),
+            ...(loaderData?.author
+            ? [{ name: 'author', content: loaderData.author }]
+            : []),
+        ],
+    }
+  }
 })
 
 function RouteComponent() {
