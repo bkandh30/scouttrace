@@ -1,52 +1,86 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { ArrowLeftIcon, User, Calendar, Clock, ExternalLink, Badge, ChevronDown } from 'lucide-react'
-import { getItemByIdFn } from '@/data/items'
+import { ArrowLeftIcon, User, Calendar, Clock, ExternalLink, Badge, ChevronDown, Loader2, SparklesIcon, Sparkles } from 'lucide-react'
+import { getItemByIdFn, saveSummaryAndGenerateTagsFn } from '@/data/items'
 import { useState } from 'react'
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'
 import { Card, CardContent } from '@/components/ui/card'
 import { MessageResponse } from '@/components/ai-elements/message'
 import { cn } from '@/lib/utils'
 import { makeTitle } from '@/lib/seo'
+import { useCompletion } from '@ai-sdk/react'
+import { toast } from 'sonner'
 
 
 export const Route = createFileRoute('/dashboard/items/$itemId')({
-  component: RouteComponent,
-  loader: ({ params }) => getItemByIdFn({ data: { id: params.itemId } }),
-  head: ({ loaderData }) => {
-    const title = makeTitle(loaderData?.title ?? 'Item Details')
-    const description =
-        loaderData?.summary ??
-        'View saved article details and AI-generated summary'
-    const image = loaderData?.ogImage
+    component: RouteComponent,
+    loader: ({ params }) => getItemByIdFn({ data: { id: params.itemId } }),
+    head: ({ loaderData }) => {
+        const title = makeTitle(loaderData?.title ?? 'Item Details')
+        const description =
+            loaderData?.summary ??
+            'View saved article details and AI-generated summary'
+        const image = loaderData?.ogImage
 
-    return {
-        meta: [
-            { title },
-            { name: 'description', content: description },
-            { property: 'og:title', content: title },
-            { property: 'og:description', content: description },
-            { property: 'og:type', content: 'article' },
-            ...(image ? [{ property: 'og:image', content: image }] : []),
-            {
-            name: 'twitter:card',
-            content: image ? 'summary_large_image' : 'summary',
-            },
-            { name: 'twitter:title', content: title },
-            { name: 'twitter:description', content: description },
-            ...(image ? [{ name: 'twitter:image', content: image }] : []),
-            ...(loaderData?.author
-            ? [{ name: 'author', content: loaderData.author }]
-            : []),
-        ],
-    }
-  }
+        return {
+            meta: [
+                { title },
+                { name: 'description', content: description },
+                { property: 'og:title', content: title },
+                { property: 'og:description', content: description },
+                { property: 'og:type', content: 'article' },
+                ...(image ? [{ property: 'og:image', content: image }] : []),
+                {
+                name: 'twitter:card',
+                content: image ? 'summary_large_image' : 'summary',
+                },
+                { name: 'twitter:title', content: title },
+                { name: 'twitter:description', content: description },
+                ...(image ? [{ name: 'twitter:image', content: image }] : []),
+                ...(loaderData?.author
+                ? [{ name: 'author', content: loaderData.author }]
+                : []),
+            ],
+        }
+    },
 })
 
 function RouteComponent() {
     const data  = Route.useLoaderData()
     const [contentOpen, setContentOpen] = useState(false)
     const router = useRouter()
+
+    const { completion, complete, isLoading } = useCompletion({
+        api: '/api/ai/summary',
+        initialCompletion: data.summary ? data.summary : undefined,
+        streamProtocol: 'text',
+        body: {
+            itemId: data.id,
+        },
+        onFinish: async (_prompt, completionText) => {
+            await saveSummaryAndGenerateTagsFn({
+                data: {
+                    id: data.id,
+                    summary: completionText,
+                },
+            })
+            toast.success('Summary generated and saved')
+            router.invalidate()
+        },
+        onError: (error) => {
+            toast.error(error.message)
+        }
+    })
+
+
+    function handleGenerateSummary() {
+        if (!data.content) {
+            toast.error('No content available to summarize')
+            return
+        }
+
+        complete(data.content)
+    }
 
     return (
         <div className="mx-auto max-w-3xl space-y-6 w-full">
@@ -79,15 +113,15 @@ function RouteComponent() {
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 {data.author && (
                     <span className="inline-flex items-center gap-1">
-                    <User className="size-3.5" />
-                    {data.author}
+                        <User className="size-3.5" />
+                        {data.author}
                     </span>
                 )}
 
                 {data.publishedAt && (
                     <span className="inline-flex items-center gap-1">
-                    <Calendar className="size-3.5" />
-                    {new Date(data.publishedAt).toLocaleDateString('en-US')}
+                        <Calendar className="size-3.5" />
+                        {new Date(data.publishedAt).toLocaleDateString('en-US')}
                     </span>
                 )}
 
@@ -115,7 +149,49 @@ function RouteComponent() {
                 </div>
             )}
 
-            {/* To-do: Summary Section */}
+            {/* Summary Section */}
+            <Card className="border-primary/20 bg-primary/5">
+                <CardContent>
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary mb-3">
+                                Summary
+                            </h2>
+
+                            {completion || data.summary ? (
+                                <MessageResponse>{completion}</MessageResponse>
+                            ): (
+                                <p className="text-muted-foreground italic">
+                                    {data.content
+                                    ? 'No summary available. Click the button to generate summary.'
+                                    : 'No content available to summarize.'
+                                    }
+                                </p>
+                            )}
+                        </div>
+
+                        {data.content && !data.summary && (
+                            <Button
+                                onClick={handleGenerateSummary}
+                                disabled={isLoading}
+                                size="sm"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Generating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="mr-2 size-4" />
+                                        Generate Summary
+                                    </>
+                                )}
+                            </Button>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* Content Section */}
             {data.content && (
