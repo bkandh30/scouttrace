@@ -66,6 +66,41 @@
     --sidebar-border: oklch(0.9 0.01 230);
     --sidebar-ring: oklch(0.62 0.14 225);
 
+    /* Auth */
+    --auth-glow-1: rgb(95 155 255 / 0.18);
+    --auth-glow-2: rgb(69 121 214 / 0.12);
+    --auth-grid-line: rgb(255 255 255 / 0.018);
+    --auth-wash-start: rgb(8 15 28 / 0.12);
+    --auth-wash-end: rgb(8 15 28 / 0.48);
+    --auth-panel: rgb(255 255 255 / 0.03);
+    --auth-panel-border: rgb(255 255 255 / 0.07);
+    --auth-panel-shadow: 0 20px 70px -38px rgb(5 10 20 / 0.68);
+    --auth-panel-overlay-glow: rgb(105 165 255 / 0.09);
+    --auth-panel-overlay-sheen: rgb(255 255 255 / 0.015);
+    --auth-card-start: rgb(18 28 46 / 0.97);
+    --auth-card-end: rgb(10 18 32 / 1);
+    --auth-card-border: rgb(255 255 255 / 0.12);
+    --auth-card-shadow: 0 34px 100px -42px rgb(3 7 18 / 0.92);
+    --auth-soft: rgb(255 255 255 / 0.045);
+    --auth-soft-muted: rgb(255 255 255 / 0.04);
+    --auth-divider: rgb(255 255 255 / 0.08);
+    --auth-surface: rgb(17 26 41 / 0.35);
+    --auth-surface-hover: rgb(17 26 41 / 0.46);
+    --auth-surface-low: rgb(17 26 41 / 0.3);
+    --auth-surface-low-hover: rgb(17 26 41 / 0.45);
+    --auth-input-surface: rgb(17 26 41 / 0.42);
+    --auth-strong: rgb(255 255 255 / 0.92);
+    --auth-body: rgb(255 255 255 / 0.88);
+    --auth-muted: rgb(255 255 255 / 0.8);
+    --auth-subtle: rgb(255 255 255 / 0.68);
+    --auth-dim: rgb(255 255 255 / 0.6);
+    --auth-primary-soft: oklch(from var(--primary) l c h / 0.16);
+    --auth-primary-shadow: 0 22px 42px -20px rgb(68 119 199 / 0.78);
+    --auth-kicker: oklch(from var(--primary) l c h / 0.8);
+    --auth-logo-ring: rgb(255 255 255 / 0.1);
+    --auth-separator-login-fill: rgb(16 25 40);
+    --auth-separator-signup-fill: rgb(13 21 36 / 0.96);
+
     /* Radius */
     --radius: 0.95rem;
 
@@ -205,6 +240,17 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
+    --color-auth-panel: var(--auth-panel);
+    --color-auth-card: var(--auth-card-start);
+    --color-auth-strong: var(--auth-strong);
+    --color-auth-body: var(--auth-body);
+    --color-auth-soft: var(--auth-soft);
+    --color-auth-divider: var(--auth-divider);
+    --color-auth-muted: var(--auth-muted);
+    --color-auth-subtle: var(--auth-subtle);
+    --color-auth-dim: var(--auth-dim);
+    --color-auth-border: var(--auth-panel-border);
+
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
@@ -224,6 +270,172 @@
 
     --tracking-normal: var(--tracking-normal);
     --spacing: var(--spacing);
+}
+
+@layer components {
+    .auth-page-glow {
+        background-image:
+            radial-gradient(circle at top left, var(--auth-glow-1), transparent 34%),
+            radial-gradient(circle at 78% 18%, var(--auth-glow-2), transparent 22%);
+    }
+
+    .auth-page-grid {
+        background-image:
+            linear-gradient(var(--auth-grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--auth-grid-line) 1px, transparent 1px);
+    }
+
+    .auth-page-wash {
+        background-image:
+            linear-gradient(180deg, var(--auth-wash-start), var(--auth-wash-end));
+    }
+
+    .auth-brand-panel {
+        background-color: var(--auth-panel);
+        border-color: var(--auth-panel-border);
+        box-shadow: var(--auth-panel-shadow);
+    }
+
+    .auth-brand-panel-overlay {
+        background-image:
+            radial-gradient(circle at top left, var(--auth-panel-overlay-glow), transparent 26%),
+            linear-gradient(180deg, var(--auth-panel-overlay-sheen), transparent 42%);
+    }
+
+    .auth-home-link {
+        background-color: var(--auth-surface-low);
+        border-color: var(--auth-divider);
+        color: var(--auth-strong);
+    }
+
+    .auth-home-link:hover {
+        background-color: var(--auth-surface-low-hover);
+    }
+
+    .auth-logo-mark {
+        background-color: var(--auth-primary-soft);
+        box-shadow: inset 0 0 0 1px var(--auth-logo-ring);
+    }
+
+    .auth-pill-muted {
+        background-color: var(--auth-soft-muted);
+        border-color: var(--auth-divider);
+        color: var(--muted-foreground);
+    }
+
+    .auth-back-link {
+        background-color: var(--auth-surface);
+        border-color: var(--auth-divider);
+        color: var(--auth-strong);
+    }
+
+    .auth-back-link:hover {
+        background-color: var(--auth-surface-hover);
+    }
+
+    .auth-brand-copy {
+        color: var(--auth-muted);
+    }
+
+    .auth-brand-copy-subtle {
+        color: var(--auth-subtle);
+    }
+
+    .auth-brand-note {
+        color: var(--auth-dim);
+    }
+
+    .auth-brand-list-row {
+        color: var(--auth-subtle);
+    }
+
+    .auth-brand-list-rule {
+        background-color: var(--auth-divider);
+    }
+
+    .auth-card-surface {
+        background-image:
+            linear-gradient(180deg, var(--auth-card-start), var(--auth-card-end));
+        border-color: var(--auth-card-border);
+        box-shadow:
+            inset 0 0 0 1px var(--auth-card-border),
+            var(--auth-card-shadow);
+    }
+
+    .auth-pill {
+        background-color: var(--auth-soft);
+        border-color: var(--auth-divider);
+        color: color-mix(in srgb, var(--muted-foreground) 92%, transparent);
+    }
+
+    .auth-kicker {
+        color: var(--auth-kicker);
+    }
+
+    .auth-social-button {
+        background-color: var(--auth-surface);
+        border-color: var(--auth-divider);
+        color: var(--auth-body);
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+    }
+
+    .auth-social-button:hover {
+        background-color: var(--auth-surface-hover);
+    }
+
+    .auth-social-icon {
+        color: var(--auth-muted);
+    }
+
+    .auth-input-surface {
+        background-color: var(--auth-input-surface);
+        border-color: var(--auth-divider);
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+    }
+
+    .auth-input-surface::placeholder {
+        color: var(--auth-dim);
+    }
+
+    .auth-input-surface:focus-visible {
+        border-color: oklch(from var(--primary) l c h / 0.45);
+        --tw-ring-color: oklch(from var(--primary) l c h / 0.2);
+    }
+
+    .auth-field-label {
+        color: var(--auth-subtle);
+    }
+
+    .auth-secondary-link {
+        color: var(--auth-link, var(--auth-subtle));
+    }
+
+    .auth-secondary-link:hover {
+        color: var(--auth-link-hover, var(--auth-strong));
+    }
+
+    .auth-primary-button {
+        box-shadow: var(--auth-primary-shadow);
+    }
+
+    .auth-separator-login [data-slot="field-separator-content"] {
+        background-color: var(--auth-separator-login-fill);
+        color: color-mix(in srgb, var(--muted-foreground) 90%, transparent);
+    }
+
+    .auth-separator-signup [data-slot="separator"] {
+        background-color: var(--auth-divider);
+    }
+
+    .auth-separator-signup [data-slot="field-separator-content"] {
+        background-image:
+            linear-gradient(
+                180deg,
+                var(--auth-separator-signup-fill),
+                var(--auth-separator-signup-fill)
+            );
+        color: color-mix(in srgb, var(--muted-foreground) 88%, transparent);
+    }
 }
 
 @layer base {
