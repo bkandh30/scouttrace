@@ -16,6 +16,8 @@ import { Badge } from '@/components/ui/badge'
 export const Route = createFileRoute('/dashboard/items/$itemId')({
     component: RouteComponent,
     loader: ({ params }) => getItemByIdFn({ data: { id: params.itemId } }),
+    staleTime: 30_000,
+    preloadStaleTime: 30_000,
     head: ({ loaderData }) => {
         const title = makeTitle(loaderData?.title ?? 'Item Details')
         const description =
@@ -81,7 +83,10 @@ function RouteComponent() {
                     ),
                 )
             } finally {
-                await router.invalidate()
+                await router.invalidate({
+                    filter: (match) => match.routeId === Route.id,
+                    sync: true,
+                })
             }
         },
         onError: (error) => {
@@ -117,7 +122,10 @@ function RouteComponent() {
                 },
             })
             toast.success('Tags generated and saved')
-            await router.invalidate()
+            await router.invalidate({
+                filter: (match) => match.routeId === Route.id,
+                sync: true,
+            })
         } catch (error) {
             toast.error(
                 getFriendlyDatabaseErrorMessage(error, 'Failed to generate tags'),

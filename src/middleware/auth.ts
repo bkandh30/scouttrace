@@ -1,4 +1,4 @@
-import { createMiddleware, createServerFn } from '@tanstack/react-start'
+import { createMiddleware } from '@tanstack/react-start'
 import { auth } from '@/lib/auth'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
@@ -50,12 +50,6 @@ async function loadSession(headers: Headers) {
 
     return session
 }
-
-export const getSessionFn = createServerFn({ method: 'GET' }).handler(async () => {
-    const headers = getRequestHeaders()
-
-    return loadSession(headers)
-})
 
 export const authFnMiddleware = createMiddleware({ type: 'function' }).server(
     async ({ next }) => {

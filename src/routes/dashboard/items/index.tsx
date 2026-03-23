@@ -1,7 +1,6 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { getItemsFn } from '@/data/items'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { Link } from '@tanstack/react-router'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -21,6 +20,8 @@ import type { ItemsSearch } from '@/schemas/import'
 export const Route = createFileRoute('/dashboard/items/')({
     component: RouteComponent,
     loader: () => ({ itemsPromise: getItemsFn() }),
+    staleTime: 30_000,
+    preloadStaleTime: 30_000,
     validateSearch: zodValidator(itemsSearchSchema),
     head: () => ({
         meta: [
@@ -130,6 +131,7 @@ function ItemsList({
                         <Link
                             to="/dashboard/items/$itemId"
                             params={{ itemId: item.id }}
+                            preload={false}
                             className="block"
                         >
                             {item.ogImage && (
@@ -245,9 +247,9 @@ function RouteComponent() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Statuses</SelectItem>
-                        {Object.values(ItemStatus).map((status) => (
-                            <SelectItem key={status} value={status}>
-                                {status.charAt(0) + status.slice(1).toLowerCase()}
+                        {Object.values(ItemStatus).map((itemStatus) => (
+                            <SelectItem key={itemStatus} value={itemStatus}>
+                                {itemStatus.charAt(0) + itemStatus.slice(1).toLowerCase()}
                             </SelectItem>
                         ))}
                     </SelectContent>

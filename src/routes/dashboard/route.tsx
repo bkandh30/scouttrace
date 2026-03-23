@@ -1,7 +1,6 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 
 import { AppSidebar } from '@/components/layout/app-sidebar'
-import { getSessionFn } from '@/middleware/auth'
 import { Separator } from '@/components/ui/separator'
 import {
     SidebarInset,
@@ -9,16 +8,23 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/dashboard')({
     beforeLoad: async () => {
-        const session = await getSessionFn()
-
-        if (!session) {
-            throw redirect({ to: '/login' })
+        if (typeof window === 'undefined') {
+            return
         }
 
-        return { session }
+        const sessionState = authClient.$store.atoms.session.get()
+
+        if (sessionState.isPending) {
+            await sessionState.refetch()
+        }
+
+        if (!authClient.$store.atoms.session.get().data) {
+            throw redirect({ to: '/login' })
+        }
     },
     component: RouteComponent,
 })
