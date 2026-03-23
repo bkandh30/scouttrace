@@ -2,15 +2,16 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldError } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { loginSchema } from '@/schemas/auth'
 import { toast } from 'sonner'
 import { authClient } from '@/lib/auth-client'
-import { useTransition } from 'react';
+import { useTransition } from 'react'
 
 export function LoginForm() {
     const navigate = useNavigate()
+    const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
     const form = useForm({
@@ -28,9 +29,10 @@ export function LoginForm() {
                     email: value.email,
                     password: value.password,
                     fetchOptions: {
-                        onSuccess: () => {
-                            toast.success('Logged in successfully'),
-                            navigate({
+                        onSuccess: async () => {
+                            await router.invalidate()
+                            toast.success('Logged in successfully')
+                            await navigate({
                                 to: '/',
                             })
                         },

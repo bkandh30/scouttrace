@@ -19,11 +19,12 @@ import {
 } from '@/components/ui/sidebar'
 import { authClient } from '@/lib/auth-client'
 import { toast } from 'sonner'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const navigate = useNavigate()
+  const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
 
   if (isPending || !session?.user) {
@@ -35,8 +36,9 @@ export function NavUser() {
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
-        onSuccess: () => {
-          navigate({
+        onSuccess: async () => {
+          await router.invalidate()
+          await navigate({
             to: '/',
           })
           toast.success('Logged out successfully')

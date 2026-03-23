@@ -1,33 +1,33 @@
 'use client'
 
 import * as React from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 
 import ThemeToggle from './ThemeToggle'
-import { buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '#/lib/utils'
 import { authClient } from '@/lib/auth-client'
-import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { useNavigate } from '@tanstack/react-router'
 
 export function Navbar() {
   const { data: session, isPending } = authClient.useSession()
   const navigate = useNavigate()
+  const router = useRouter()
 
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
-        onSuccess: () => {
-          toast.success('Logged out successfully'),
-          navigate({
+        onSuccess: async () => {
+          await router.invalidate()
+          toast.success('Logged out successfully')
+          await navigate({
             to: '/',
           })
         },
         onError: ({ error }) => {
           toast.error(error.message)
-        }
-      }
+        },
+      },
     })
   }
 
@@ -71,9 +71,11 @@ export function Navbar() {
               <Link to="/dashboard" className={buttonVariants({ variant: 'default' })}>
                 Dashboard
               </Link>
-              <Button variant="secondary" onClick={handleSignOut}>Logout</Button>
+              <Button variant="secondary" onClick={handleSignOut}>
+                Logout
+              </Button>
             </>
-          ): (
+          ) : (
             <>
               <Link to="/login" className={buttonVariants({ variant: 'ghost' })}>
                 Login

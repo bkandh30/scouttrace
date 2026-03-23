@@ -1,60 +1,106 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+    ErrorComponent,
+    HeadContent,
+    Scripts,
+    createRootRoute,
+    isRedirect,
+    useRouter,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { useEffect } from 'react'
 
-import appCss from '../styles.css?url'
 import { Toaster } from '@/components/ui/sonner'
+import { makeTitle } from '@/lib/seo'
+import appCss from '../styles.css?url'
+
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'auto';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);if(mode==='auto'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',mode)}root.style.colorScheme=resolved;}catch(e){}})();`
 
-import { makeTitle } from '@/lib/seo'
-
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: makeTitle(),
-      },
-    ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
-  }),
-  shellComponent: RootDocument,
+    head: () => ({
+        meta: [
+            {
+                charSet: 'utf-8',
+            },
+            {
+                name: 'viewport',
+                content: 'width=device-width, initial-scale=1',
+            },
+            {
+                title: makeTitle(),
+            },
+        ],
+        links: [
+            {
+                rel: 'stylesheet',
+                href: appCss,
+            },
+        ],
+    }),
+    errorComponent: RootErrorComponent,
+    shellComponent: RootDocument,
 })
 
+function RootErrorComponent({ error }: { error: unknown }) {
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!isRedirect(error)) {
+            return
+        }
+
+        void router.navigate(router.resolveRedirect(error).options)
+    }, [error, router])
+
+    if (isRedirect(error)) {
+        return null
+    }
+
+    if (error instanceof Response) {
+        return (
+            <div className="flex min-h-screen items-center justify-center p-6 text-center">
+                <div className="space-y-2">
+                    <h1 className="text-lg font-semibold">Request failed</h1>
+                    <p className="text-sm text-muted-foreground">
+                        {error.status ? `Status ${error.status}` : 'An unexpected response was returned.'}
+                    </p>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex min-h-screen items-center justify-center p-6">
+            <div className="w-full max-w-xl">
+                <ErrorComponent error={error} />
+            </div>
+        </div>
+    )
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Toaster closeButton={true} position="bottom-center" />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
-        <Scripts />
-      </body>
-    </html>
-  )
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+                <HeadContent />
+            </head>
+            <body>
+                {children}
+                <Toaster closeButton={true} position="bottom-center" />
+                <TanStackDevtools
+                    config={{
+                        position: 'bottom-right',
+                    }}
+                    plugins={[
+                        {
+                            name: 'Tanstack Router',
+                            render: <TanStackRouterDevtoolsPanel />,
+                        },
+                    ]}
+                />
+                <Scripts />
+            </body>
+        </html>
+    )
 }

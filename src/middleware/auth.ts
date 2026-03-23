@@ -1,4 +1,4 @@
-import { createMiddleware } from '@tanstack/react-start'
+import { createMiddleware, createServerFn } from '@tanstack/react-start'
 import { auth } from '@/lib/auth'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { redirect } from '@tanstack/react-router'
@@ -29,32 +29,44 @@ async function getSessionWithRetry(headers: Headers) {
     }
 }
 
+async function loadSession(headers: Headers) {
+    let session:
+        | Awaited<ReturnType<typeof auth.api.getSession>>
+        | typeof sessionUnavailable
+
+    try {
+        session = await getSessionWithRetry(headers)
+    } catch (error) {
+        if (isDatabaseWakeupError(error)) {
+            throw createDatabaseWakeupResponse()
+        }
+
+        throw error
+    }
+
+    if (session === sessionUnavailable) {
+        throw createDatabaseWakeupResponse()
+    }
+
+    return session
+}
+
+export const getSessionFn = createServerFn({ method: 'GET' }).handler(async () => {
+    const headers = getRequestHeaders()
+
+    return loadSession(headers)
+})
+
 export const authFnMiddleware = createMiddleware({ type: 'function' }).server(
     async ({ next }) => {
         const headers = getRequestHeaders()
+        const session = await loadSession(headers)
 
-        let session:
-            | Awaited<ReturnType<typeof auth.api.getSession>>
-            | typeof sessionUnavailable
+        if (!session) {
+            throw redirect({ to: '/login' })
+        }
 
-        try {
-            session = await getSessionWithRetry(headers)
-        } catch (error) {
-            if (isDatabaseWakeupError(error)) {
-                throw createDatabaseWakeupResponse()
-            }
-        throw error
-      }
-
-      if (session === sessionUnavailable) {
-          throw createDatabaseWakeupResponse()
-      }
-
-      if (!session) {
-          throw redirect({ to: '/login' })
-      }
-
-      return next({ context: { session } })
+        return next({ context: { session } })
     },
 )
 
@@ -64,29 +76,22 @@ export const authMiddleware = createMiddleware({ type: 'request' }).server(
 
         if (
             !url.pathname.startsWith('/dashboard') &&
-            !url.pathname.startsWith('/api/auth') &&
             !url.pathname.startsWith('/api/ai')
         ) {
             return next()
         }
 
         const headers = getRequestHeaders()
-
-        let session:
-            | Awaited<ReturnType<typeof auth.api.getSession>>
-            | typeof sessionUnavailable
+        let session: Awaited<ReturnType<typeof auth.api.getSession>>
 
         try {
-            session = await getSessionWithRetry(headers)
+            session = await loadSession(headers)
         } catch (error) {
-            if (isDatabaseWakeupError(error)) {
-                return createDatabaseWakeupResponse()
+            if (error instanceof Response) {
+                return error
             }
-            throw error
-        }
 
-        if (session === sessionUnavailable) {
-            return createDatabaseWakeupResponse()
+            throw error
         }
 
         if (!session) {
