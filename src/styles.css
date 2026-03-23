@@ -21,88 +21,88 @@
     color-scheme: light;
 
     /* Core */
-    --background: oklch(0.985 0.006 224);
-    --foreground: oklch(0.205 0.02 244);
+    --background: oklch(0.985 0.002 280);
+    --foreground: oklch(0.255 0.01 280);
 
     /* Surfaces */
-    --card: oklch(0.995 0.004 224);
-    --card-foreground: oklch(0.205 0.02 244);
-    --popover: oklch(0.995 0.004 224);
-    --popover-foreground: oklch(0.205 0.02 244);
+    --card: oklch(0.998 0.001 280);
+    --card-foreground: oklch(0.255 0.01 280);
+    --popover: oklch(0.998 0.001 280);
+    --popover-foreground: oklch(0.255 0.01 280);
 
     /* Brand */
-    --primary: oklch(0.58 0.16 225);
-    --primary-foreground: oklch(0.985 0.01 220);
+    --primary: oklch(0.6 0.145 304);
+    --primary-foreground: oklch(0.985 0.002 280);
 
     /* Supporting */
-    --secondary: oklch(0.95 0.014 225);
-    --secondary-foreground: oklch(0.28 0.03 244);
-    --muted: oklch(0.955 0.008 224);
-    --muted-foreground: oklch(0.5 0.02 240);
-    --accent: oklch(0.935 0.025 210);
-    --accent-foreground: oklch(0.22 0.03 244);
+    --secondary: oklch(0.965 0.006 285);
+    --secondary-foreground: oklch(0.255 0.01 280);
+    --muted: oklch(0.962 0.003 280);
+    --muted-foreground: oklch(0.56 0.01 280);
+    --accent: oklch(0.962 0.008 295);
+    --accent-foreground: oklch(0.4 0.12 304);
 
     /* Utility */
-    --destructive: oklch(0.61 0.22 26);
-    --destructive-foreground: oklch(0.985 0.01 20);
-    --border: oklch(0.9 0.01 230);
-    --input: oklch(0.9 0.01 230);
-    --ring: oklch(0.62 0.14 225);
+    --destructive: oklch(0.61 0.22 28);
+    --destructive-foreground: oklch(0.985 0.002 280);
+    --border: oklch(0.9 0.004 280);
+    --input: oklch(0.9 0.004 280);
+    --ring: oklch(0.6 0.145 304);
 
     /* Charts */
-    --chart-1: oklch(0.72 0.16 215);
-    --chart-2: oklch(0.66 0.14 177);
-    --chart-3: oklch(0.7 0.16 260);
-    --chart-4: oklch(0.76 0.15 84);
-    --chart-5: oklch(0.68 0.17 32);
+    --chart-1: oklch(0.6 0.145 304);
+    --chart-2: oklch(0.69 0.11 292);
+    --chart-3: oklch(0.56 0.13 325);
+    --chart-4: oklch(0.7 0.02 280);
+    --chart-5: oklch(0.84 0.01 280);
 
     /* Sidebar */
-    --sidebar: oklch(0.965 0.008 224);
-    --sidebar-foreground: oklch(0.22 0.022 244);
-    --sidebar-primary: oklch(0.58 0.16 225);
-    --sidebar-primary-foreground: oklch(0.985 0.01 220);
-    --sidebar-accent: oklch(0.935 0.018 224);
-    --sidebar-accent-foreground: oklch(0.24 0.025 244);
-    --sidebar-border: oklch(0.9 0.01 230);
-    --sidebar-ring: oklch(0.62 0.14 225);
+    --sidebar: oklch(0.982 0.002 280);
+    --sidebar-foreground: oklch(0.255 0.01 280);
+    --sidebar-primary: oklch(0.6 0.145 304);
+    --sidebar-primary-foreground: oklch(0.985 0.002 280);
+    --sidebar-accent: oklch(0.962 0.008 295);
+    --sidebar-accent-foreground: oklch(0.255 0.01 280);
+    --sidebar-border: oklch(0.9 0.004 280);
+    --sidebar-ring: oklch(0.6 0.145 304);
 
     /* Auth */
-    --auth-glow-1: rgb(95 155 255 / 0.18);
-    --auth-glow-2: rgb(69 121 214 / 0.12);
-    --auth-grid-line: rgb(255 255 255 / 0.018);
-    --auth-wash-start: rgb(8 15 28 / 0.12);
-    --auth-wash-end: rgb(8 15 28 / 0.48);
-    --auth-panel: rgb(255 255 255 / 0.03);
-    --auth-panel-border: rgb(255 255 255 / 0.07);
-    --auth-panel-shadow: 0 20px 70px -38px rgb(5 10 20 / 0.68);
-    --auth-panel-overlay-glow: rgb(105 165 255 / 0.09);
-    --auth-panel-overlay-sheen: rgb(255 255 255 / 0.015);
-    --auth-card-start: rgb(18 28 46 / 0.97);
-    --auth-card-end: rgb(10 18 32 / 1);
-    --auth-card-border: rgb(255 255 255 / 0.12);
-    --auth-card-shadow: 0 34px 100px -42px rgb(3 7 18 / 0.92);
-    --auth-soft: rgb(255 255 255 / 0.045);
-    --auth-soft-muted: rgb(255 255 255 / 0.04);
-    --auth-divider: rgb(255 255 255 / 0.08);
-    --auth-surface: rgb(17 26 41 / 0.35);
-    --auth-surface-hover: rgb(17 26 41 / 0.46);
-    --auth-surface-low: rgb(17 26 41 / 0.3);
-    --auth-surface-low-hover: rgb(17 26 41 / 0.45);
-    --auth-input-surface: rgb(17 26 41 / 0.42);
-    --auth-strong: rgb(255 255 255 / 0.92);
-    --auth-body: rgb(255 255 255 / 0.88);
-    --auth-muted: rgb(255 255 255 / 0.8);
-    --auth-subtle: rgb(255 255 255 / 0.68);
-    --auth-dim: rgb(255 255 255 / 0.6);
-    --auth-primary-soft: oklch(from var(--primary) l c h / 0.16);
-    --auth-primary-shadow: 0 22px 42px -20px rgb(68 119 199 / 0.78);
-    --auth-kicker: oklch(from var(--primary) l c h / 0.8);
-    --auth-logo-ring: rgb(255 255 255 / 0.1);
-    --auth-separator-login-fill: rgb(16 25 40);
-    --auth-separator-signup-fill: rgb(13 21 36 / 0.96);
+    --auth-glow-1: rgb(116 101 189 / 0.05);
+    --auth-glow-2: rgb(98 84 170 / 0.03);
+    --auth-grid-line: rgb(17 24 39 / 0.04);
+    --auth-wash-start: rgb(255 255 255 / 0.3);
+    --auth-wash-end: rgb(255 255 255 / 0.65);
+    --auth-panel: rgb(255 255 255 / 0.84);
+    --auth-panel-border: rgb(116 101 189 / 0.06);
+    --auth-panel-shadow: 0 20px 70px -38px rgb(15 23 42 / 0.18);
+    --auth-panel-overlay-glow: rgb(116 101 189 / 0.025);
+    --auth-panel-overlay-sheen: rgb(255 255 255 / 0.55);
+    --auth-card-start: rgb(255 255 255 / 0.98);
+    --auth-card-end: rgb(249 250 251 / 1);
+    --auth-card-border: rgb(116 101 189 / 0.08);
+    --auth-card-shadow: 0 34px 100px -42px rgb(15 23 42 / 0.18);
+    --auth-soft: rgb(17 24 39 / 0.03);
+    --auth-soft-muted: rgb(17 24 39 / 0.022);
+    --auth-divider: rgb(17 24 39 / 0.08);
+    --auth-surface: rgb(255 255 255 / 0.72);
+    --auth-surface-hover: rgb(255 255 255 / 0.88);
+    --auth-surface-low: rgb(255 255 255 / 0.58);
+    --auth-surface-low-hover: rgb(255 255 255 / 0.75);
+    --auth-input-surface: rgb(255 255 255 / 0.92);
+    --auth-strong: rgb(17 24 39 / 0.96);
+    --auth-body: rgb(31 41 55 / 0.84);
+    --auth-muted: rgb(55 65 81 / 0.72);
+    --auth-subtle: rgb(75 85 99 / 0.64);
+    --auth-dim: rgb(107 114 128 / 0.56);
+    --auth-primary-soft: rgb(116 101 189 / 0.09);
+    --auth-primary-shadow: 0 22px 42px -20px rgb(98 84 170 / 0.24);
+    --auth-kicker: oklch(from var(--primary) l c h / 0.76);
+    --auth-logo-ring: rgb(116 101 189 / 0.1);
+    --auth-separator-login-fill: rgb(255 255 255 / 0.98);
+    --auth-separator-signup-fill: rgb(255 255 255 / 0.98);
 
     /* Radius */
-    --radius: 0.95rem;
+    --radius: 0.9rem;
 
     /* Shadows */
     --shadow-2xs: 0 1px 2px 0 hsl(221 39% 11% / 0.04);
@@ -132,53 +132,88 @@
     color-scheme: dark;
 
     /* Core */
-    --background: oklch(0.14 0.012 248);
-    --foreground: oklch(0.965 0.006 220);
+    --background: oklch(0.16 0.004 280);
+    --foreground: oklch(0.92 0.006 280);
 
     /* Surfaces */
-    --card: oklch(0.19 0.014 248);
-    --card-foreground: oklch(0.965 0.006 220);
-    --popover: oklch(0.19 0.014 248);
-    --popover-foreground: oklch(0.965 0.006 220);
+    --card: oklch(0.2 0.006 280);
+    --card-foreground: oklch(0.92 0.006 280);
+    --popover: oklch(0.215 0.007 280);
+    --popover-foreground: oklch(0.92 0.006 280);
 
     /* Brand */
-    --primary: oklch(0.71 0.15 221);
-    --primary-foreground: oklch(0.18 0.02 245);
+    --primary: oklch(0.6 0.145 304);
+    --primary-foreground: oklch(0.97 0.002 280);
 
     /* Supporting */
-    --secondary: oklch(0.24 0.012 245);
-    --secondary-foreground: oklch(0.94 0.008 220);
-    --muted: oklch(0.23 0.01 245);
-    --muted-foreground: oklch(0.72 0.015 230);
-    --accent: oklch(0.26 0.025 215);
-    --accent-foreground: oklch(0.96 0.006 220);
+    --secondary: oklch(0.225 0.007 280);
+    --secondary-foreground: oklch(0.9 0.006 280);
+    --muted: oklch(0.205 0.005 280);
+    --muted-foreground: oklch(0.72 0.008 280);
+    --accent: oklch(0.23 0.008 280);
+    --accent-foreground: oklch(0.9 0.01 280);
 
     /* Utility */
-    --destructive: oklch(0.68 0.2 25);
-    --destructive-foreground: oklch(0.12 0.01 25);
-    --border: oklch(0.29 0.012 245 / 0.9);
-    --input: oklch(0.27 0.012 245 / 0.95);
-    --ring: oklch(0.71 0.15 221);
+    --destructive: oklch(0.65 0.2 27);
+    --destructive-foreground: oklch(0.97 0.002 280);
+    --border: oklch(0.3 0.007 280);
+    --input: oklch(0.3 0.007 280);
+    --ring: oklch(0.6 0.145 304);
 
     /* Charts */
-    --chart-1: oklch(0.72 0.17 215);
-    --chart-2: oklch(0.76 0.14 178);
-    --chart-3: oklch(0.74 0.17 274);
-    --chart-4: oklch(0.8 0.15 92);
-    --chart-5: oklch(0.75 0.17 38);
+    --chart-1: oklch(0.6 0.145 304);
+    --chart-2: oklch(0.68 0.11 292);
+    --chart-3: oklch(0.54 0.11 325);
+    --chart-4: oklch(0.64 0.025 280);
+    --chart-5: oklch(0.82 0.018 280);
 
     /* Sidebar */
-    --sidebar: oklch(0.17 0.012 248);
-    --sidebar-foreground: oklch(0.955 0.006 220);
-    --sidebar-primary: oklch(0.71 0.15 221);
-    --sidebar-primary-foreground: oklch(0.18 0.02 245);
-    --sidebar-accent: oklch(0.24 0.014 245);
-    --sidebar-accent-foreground: oklch(0.96 0.006 220);
-    --sidebar-border: oklch(0.28 0.012 245 / 0.85);
-    --sidebar-ring: oklch(0.71 0.15 221);
+    --sidebar: oklch(0.185 0.005 280);
+    --sidebar-foreground: oklch(0.9 0.006 280);
+    --sidebar-primary: oklch(0.6 0.145 304);
+    --sidebar-primary-foreground: oklch(0.97 0.002 280);
+    --sidebar-accent: oklch(0.23 0.008 280);
+    --sidebar-accent-foreground: oklch(0.92 0.006 280);
+    --sidebar-border: oklch(0.28 0.007 280);
+    --sidebar-ring: oklch(0.6 0.145 304);
+
+    /* Auth */
+    --auth-glow-1: rgb(116 101 189 / 0.06);
+    --auth-glow-2: rgb(98 84 170 / 0.035);
+    --auth-grid-line: rgb(255 255 255 / 0.01);
+    --auth-wash-start: rgb(8 9 12 / 0.08);
+    --auth-wash-end: rgb(8 9 12 / 0.52);
+    --auth-panel: rgb(21 23 31 / 0.84);
+    --auth-panel-border: rgb(116 101 189 / 0.06);
+    --auth-panel-shadow: 0 20px 70px -38px rgb(0 0 0 / 0.84);
+    --auth-panel-overlay-glow: rgb(116 101 189 / 0.025);
+    --auth-panel-overlay-sheen: rgb(255 255 255 / 0.008);
+    --auth-card-start: rgb(22 24 32 / 0.98);
+    --auth-card-end: rgb(17 19 26 / 1);
+    --auth-card-border: rgb(116 101 189 / 0.08);
+    --auth-card-shadow: 0 34px 100px -42px rgb(0 0 0 / 0.95);
+    --auth-soft: rgb(255 255 255 / 0.026);
+    --auth-soft-muted: rgb(255 255 255 / 0.018);
+    --auth-divider: rgb(255 255 255 / 0.06);
+    --auth-surface: rgb(31 34 43 / 0.6);
+    --auth-surface-hover: rgb(31 34 43 / 0.74);
+    --auth-surface-low: rgb(31 34 43 / 0.42);
+    --auth-surface-low-hover: rgb(31 34 43 / 0.56);
+    --auth-input-surface: rgb(20 22 30 / 0.88);
+    --auth-strong: rgb(243 244 246 / 0.96);
+    --auth-body: rgb(214 217 223 / 0.88);
+    --auth-muted: rgb(214 217 223 / 0.72);
+    --auth-subtle: rgb(214 217 223 / 0.58);
+    --auth-dim: rgb(214 217 223 / 0.42);
+    --auth-primary-soft: rgb(116 101 189 / 0.1);
+    --auth-primary-shadow: 0 22px 42px -20px rgb(98 84 170 / 0.32);
+    --auth-kicker: oklch(from var(--primary) l c h / 0.78);
+    --auth-logo-ring: rgb(116 101 189 / 0.12);
+    --auth-separator-login-fill: rgb(22 24 32 / 0.98);
+    --auth-separator-signup-fill: rgb(17 19 26 / 0.98);
 
     /* Radius */
-    --radius: 0.95rem;
+    --radius: 0.9rem;
 
     /* Shadows */
     --shadow-2xs: 0 1px 2px 0 hsl(220 80% 2% / 0.2);
@@ -275,8 +310,8 @@
 @layer components {
     .auth-page-glow {
         background-image:
-            radial-gradient(circle at top left, var(--auth-glow-1), transparent 34%),
-            radial-gradient(circle at 78% 18%, var(--auth-glow-2), transparent 22%);
+            radial-gradient(ellipse 55% 35% at top left, var(--auth-glow-1), transparent 65%),
+            radial-gradient(ellipse 35% 25% at 78% 18%, var(--auth-glow-2), transparent 55%);
     }
 
     .auth-page-grid {
@@ -398,8 +433,8 @@
     }
 
     .auth-input-surface:focus-visible {
-        border-color: oklch(from var(--primary) l c h / 0.45);
-        --tw-ring-color: oklch(from var(--primary) l c h / 0.2);
+        border-color: oklch(from var(--primary) l c h / 0.34);
+        --tw-ring-color: oklch(from var(--primary) l c h / 0.16);
     }
 
     .auth-field-label {
@@ -429,11 +464,9 @@
 
     .auth-separator-signup [data-slot="field-separator-content"] {
         background-image:
-            linear-gradient(
-                180deg,
+            linear-gradient(180deg,
                 var(--auth-separator-signup-fill),
-                var(--auth-separator-signup-fill)
-            );
+                var(--auth-separator-signup-fill));
         color: color-mix(in srgb, var(--muted-foreground) 88%, transparent);
     }
 }
@@ -462,30 +495,30 @@
         -moz-osx-font-smoothing: grayscale;
         background-image:
             radial-gradient(circle at top,
-                oklch(from var(--primary) l c h / 0.09),
-                transparent 28%),
-            radial-gradient(circle at 80% 20%,
-                oklch(from var(--accent) l c h / 0.05),
-                transparent 18%);
+                oklch(0.6 0.145 304 / 0.022),
+                transparent 22%),
+            radial-gradient(circle at 82% 12%,
+                oklch(0.5 0.08 300 / 0.014),
+                transparent 16%);
         background-attachment: fixed;
     }
 
     .dark body {
         background-image:
             radial-gradient(circle at top,
-                oklch(from var(--primary) l c h / 0.12),
-                transparent 24%),
-            radial-gradient(circle at 80% 12%,
-                oklch(0.42 0.09 185 / 0.12),
-                transparent 18%),
+                oklch(0.6 0.145 304 / 0.03),
+                transparent 22%),
+            radial-gradient(circle at 82% 10%,
+                oklch(0.5 0.08 300 / 0.018),
+                transparent 16%),
             linear-gradient(180deg,
-                oklch(0.155 0.016 246),
-                oklch(0.14 0.012 248) 24%,
-                oklch(0.135 0.01 250));
+                oklch(0.16 0.004 280),
+                oklch(0.155 0.004 280) 34%,
+                oklch(0.148 0.004 280));
     }
 
     ::selection {
-        background: oklch(from var(--primary) l c h / 0.24);
+        background: oklch(from var(--primary) l c h / 0.22);
         color: var(--foreground);
     }
 
@@ -535,6 +568,18 @@
     h6 {
         text-wrap: balance;
         letter-spacing: -0.02em;
+    }
+
+    .dark h1,
+    .dark h2,
+    .dark h3 {
+        color: oklch(0.955 0.004 260);
+    }
+
+    .dark h4,
+    .dark h5,
+    .dark h6 {
+        color: oklch(0.92 0.004 260);
     }
 
     p {
