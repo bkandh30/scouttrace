@@ -62,22 +62,20 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link
-                to="/dashboard"
-                className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
+                to="/"
+                className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
               >
-                <div className="bg-foreground text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <img
-                    src="/scouttrace.png"
-                    alt="ScoutTrace Logo"
-                    className="size-8 rounded-md object-cover"
-                  />
-                </div>
-                <div className="grid min-w-0 flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="font-medium text-primary-foreground font-bold">
+                <img
+                  src="/scouttrace.png"
+                  alt="ScoutTrace Logo"
+                  className="size-7 shrink-0 rounded-lg object-cover"
+                />
+                <div className="grid min-w-0 flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
+                  <span className="text-sm font-semibold tracking-tight">
                     ScoutTrace
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    AI-Powered Knowledge Base
+                  <span className="text-xs text-muted-foreground/70">
+                    AI Knowledge Base
                   </span>
                 </div>
               </Link>
@@ -89,7 +87,7 @@ export function AppSidebar() {
         {/* <NavMain items={data.navMain} /> */}
         <NavPrimary items={navItems} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border">
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

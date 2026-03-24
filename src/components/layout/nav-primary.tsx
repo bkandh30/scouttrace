@@ -20,19 +20,18 @@ export function NavPrimary({ items }: NavPrimaryProps) {
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton
                   asChild
-                  size="lg"
                   tooltip={item.title}
-                  className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
+                  className="h-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
                 >
-                  <Link 
+                  <Link
                     activeProps={{
                       'data-active': true,
                     }}
-                    to={item.to} 
+                    to={item.to}
                     activeOptions={item.activeOptions}
                   >
-                    <item.icon />
-                    <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                    <item.icon className="!size-[18px]" />
+                    <span className="text-[14.5px] group-data-[collapsible=icon]:hidden">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
