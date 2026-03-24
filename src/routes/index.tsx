@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import HeroSection from '../components/layout/hero-section'
 import Features from '../components/layout/features'
 import Workflow from '../components/layout/workflow'
+import CallToAction from '../components/layout/call-to-action'
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -11,6 +12,7 @@ function App() {
             <HeroSection />
             <Features />
             <Workflow />
+            <CallToAction />
         </div>
     )
 }
