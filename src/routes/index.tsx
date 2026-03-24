@@ -3,16 +3,18 @@ import HeroSection from '../components/layout/hero-section'
 import Features from '../components/layout/features'
 import Workflow from '../components/layout/workflow'
 import CallToAction from '../components/layout/call-to-action'
+import FooterSection from '../components/layout/footer'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-    return (
-        <div>
-            <HeroSection />
-            <Features />
-            <Workflow />
-            <CallToAction />
-        </div>
-    )
+  return (
+    <div>
+      <HeroSection />
+      <Features />
+      <Workflow />
+      <CallToAction />
+      <FooterSection />
+    </div>
+  )
 }
