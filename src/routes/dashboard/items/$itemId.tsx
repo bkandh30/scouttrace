@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { ArrowLeftIcon, User, Calendar, Clock, ExternalLink, ChevronDown, Loader2, Sparkles } from 'lucide-react'
+import { ArrowLeftIcon,User,Calendar,Clock,ExternalLink,ChevronDown,Loader2,Sparkles,FileText } from 'lucide-react'
 import { generateTagsForItemFn, getItemByIdFn, saveSummaryFn } from '@/data/items'
 import { useState } from 'react'
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible'
@@ -11,7 +11,6 @@ import { makeTitle } from '@/lib/seo'
 import { getFriendlyDatabaseErrorMessage } from '@/lib/database-errors'
 import { useCompletion } from '@ai-sdk/react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/dashboard/items/$itemId')({
     component: RouteComponent,
@@ -21,8 +20,7 @@ export const Route = createFileRoute('/dashboard/items/$itemId')({
     head: ({ loaderData }) => {
         const title = makeTitle(loaderData?.title ?? 'Item Details')
         const description =
-            loaderData?.summary ??
-            'View saved article details and AI-generated summary'
+            loaderData?.summary ?? 'View saved article details and AI-generated summary'
         const image = loaderData?.ogImage
 
         return {
@@ -135,106 +133,126 @@ function RouteComponent() {
         }
     }
 
+    const metaItems = [
+        data.author && (
+            <span key="author" className="inline-flex items-center gap-1.5">
+                <User className="size-3.5" />
+                {data.author}
+            </span>
+        ),
+        data.publishedAt && (
+            <span key="published" className="inline-flex items-center gap-1.5">
+                <Calendar className="size-3.5" />
+                {new Date(data.publishedAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                })}
+            </span>
+        ),
+        <span key="saved" className="inline-flex items-center gap-1.5">
+            <Clock className="size-3.5" />
+            Saved{' '}
+            {new Date(data.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            })}
+        </span>,
+    ].filter(Boolean)
+
     return (
-        <div className="mx-auto max-w-3xl space-y-6 w-full">
-            <div className="flex justify-start">
+        <div className="relative flex min-h-full flex-1 flex-col px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+            <div className="relative mx-auto w-full max-w-3xl space-y-5">
+                {/* ── Back ── */}
                 <Link
                     to="/dashboard/items"
                     className={buttonVariants({ variant: 'outline', size: 'sm' })}
                 >
-                    <ArrowLeftIcon className="size-4" />
-                    Back to Items
+                    <ArrowLeftIcon className="size-3.5" />
+                    Items
                 </Link>
-            </div>
 
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
-                <img
-                    src={data.ogImage ?? 'https://placehold.co/600x400'}
-                    alt={data.title ?? 'Item Thumbnail'}
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-            </div>
-
-            <div className="space-y-3">
-                <h1 className="text-3xl font-semibold tracking-tight">
-                    {data.title ?? 'Untitled'}
-                </h1>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                {data.author && (
-                    <span className="inline-flex items-center gap-1">
-                        <User className="size-3.5" />
-                        {data.author}
-                    </span>
+                {/* ── Hero image ── */}
+                {data.ogImage && (
+                    <div className="relative h-32 w-full overflow-hidden rounded-lg bg-muted">
+                        <img
+                            src={data.ogImage}
+                            alt={data.title ?? 'Item thumbnail'}
+                            className="size-full object-cover object-top"
+                        />
+                        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background/40 to-transparent" />
+                    </div>
                 )}
 
-                {data.publishedAt && (
-                    <span className="inline-flex items-center gap-1">
-                        <Calendar className="size-3.5" />
-                        {new Date(data.publishedAt).toLocaleDateString('en-US')}
-                    </span>
-                )}
+                {/* ── Header ── */}
+                <div className="space-y-2">
+                    <h1 className="text-chart-2 text-xl font-semibold tracking-tight sm:text-2xl">
+                        {data.title ?? 'Untitled'}
+                    </h1>
 
-                <span className="inline-flex items-center gap-1">
-                    <Clock className="size-3.5" />
-                    Saved {new Date(data.createdAt).toLocaleDateString('en-US')}
-                </span>
-            </div>
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground/70">
+                        {metaItems.map((item, i) => (
+                            <span key={i} className="contents">
+                                {i > 0 && (
+                                    <span className="text-muted-foreground/20 select-none">
+                                        ·
+                                    </span>
+                                )}
+                                {item}
+                            </span>
+                        ))}
+                        <span className="text-muted-foreground/20 select-none">·</span>
+                        <a
+                            href={data.url}
+                            className="text-muted-foreground hover:text-foreground hover:border-border inline-flex items-center gap-1.5 rounded-md border border-border/50 px-2 py-0.5 text-xs transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <ExternalLink className="size-2.5" />
+                            View source
+                        </a>
+                    </div>
 
-            <a
-                href={data.url}
-                className="text-chart-3 hover:underline inline-flex items-center gap-1 text-sm"
-                target="_blank"
-            >
-                View Original Item
-                <ExternalLink className="size-3.5" />
-            </a>
-
-            {/* Tags */}
-            {data.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                    {data.tags.map((tag) => (
-                        <Badge key={tag}>{tag}</Badge>
-                    ))}
+                    <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                        {data.tags.length > 0 &&
+                            data.tags.map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="rounded-md border border-primary/15 bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground"
+                                >
+                                    {tag}
+                                </span>
+                            ))}
+                    </div>
                 </div>
-            )}
 
-            {/* Summary Section */}
-            <Card className="border-primary/20 bg-primary/5">
-                <CardContent>
-                    <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary mb-3">
-                                Summary
-                            </h2>
-
-                            {summaryText ? (
-                                <MessageResponse>{summaryText}</MessageResponse>
-                            ) : (
-                                <p className="text-muted-foreground italic">
-                                    {data.content
-                                        ? 'No summary available. Click the button to generate summary.'
-                                        : 'No content available to summarize.'}
-                                </p>
-                            )}
-                        </div>
+                {/* ── Summary ── */}
+                <Card>
+                    <div className="flex items-center justify-between px-4 pb-0">
+                        <h2
+                            className="text-xs font-medium uppercase tracking-wider"
+                            style={{ color: 'oklch(0.72 0.10 304)' }}
+                        >
+                            Summary
+                        </h2>
 
                         {data.content && !data.summary && (
                             <Button
                                 onClick={handleGenerateSummary}
                                 disabled={isLoading}
                                 size="sm"
+                                variant="secondary"
                             >
                                 {isLoading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        <Loader2 className="size-3.5 animate-spin" />
                                         Generating...
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkles className="mr-2 size-4" />
-                                        Generate Summary
+                                        <Sparkles className="size-3.5" />
+                                        Generate summary
                                     </>
                                 )}
                             </Button>
@@ -244,48 +262,70 @@ function RouteComponent() {
                             <Button
                                 onClick={handleGenerateTags}
                                 disabled={isGeneratingTags}
-                                size="sm"
+                                size="xs"
+                                variant="ghost"
                             >
                                 {isGeneratingTags ? (
                                     <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        <Loader2 className="size-3 animate-spin" />
                                         Generating...
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkles className="mr-2 size-4" />
-                                        Generate Tags
+                                        <Sparkles className="size-3" />
+                                        Generate tags
                                     </>
                                 )}
                             </Button>
                         )}
                     </div>
-                </CardContent>
-            </Card>
 
-            {/* Content Section */}
-            {data.content && (
-                <Collapsible open={contentOpen} onOpenChange={setContentOpen}>
-                    <CollapsibleTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between">
-                            <span className="font-medium">View Full Content</span>
-                            <ChevronDown
-                                className={cn(
-                                    contentOpen ? 'rotate-180' : '',
-                                    'size-4 transition-transform duration-200',
-                                )}
-                            />
-                        </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <Card className="mt-2">
-                            <CardContent>
-                                <MessageResponse>{data.content}</MessageResponse>
-                            </CardContent>
-                        </Card>
-                    </CollapsibleContent>
-                </Collapsible>
-            )}
+                    <CardContent>
+                        {summaryText ? (
+                            <MessageResponse>{summaryText}</MessageResponse>
+                        ) : (
+                            <div className="flex flex-col items-center py-4 text-center">
+                                <p className="text-muted-foreground/60 text-sm">
+                                    {data.content
+                                        ? 'No summary yet. Generate one to get a quick overview.'
+                                        : 'No content available to summarize.'}
+                                </p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* ── Full content ── */}
+                {data.content && (
+                    <Collapsible open={contentOpen} onOpenChange={setContentOpen}>
+                        <CollapsibleTrigger asChild>
+                            <button
+                                type="button"
+                                className="group flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 transition-colors hover:border-border/40 hover:bg-muted/30"
+                            >
+                                <FileText className="text-muted-foreground size-3.5" />
+                                <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium transition-colors">
+                                    Source content
+                                </span>
+                                <div className="flex-1" />
+                                <ChevronDown
+                                    className={cn(
+                                        'text-muted-foreground/40 size-3.5 transition-transform duration-200 group-hover:text-muted-foreground',
+                                        contentOpen && 'rotate-180',
+                                    )}
+                                />
+                            </button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                            <Card className="mt-2">
+                                <CardContent className="max-w-none">
+                                    <MessageResponse>{data.content}</MessageResponse>
+                                </CardContent>
+                            </Card>
+                        </CollapsibleContent>
+                    </Collapsible>
+                )}
+            </div>
         </div>
     )
 }
