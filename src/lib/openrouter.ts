@@ -1,5 +1,5 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 
 export const openrouter = createOpenRouter({
-  apiKey: process.env.AI_API_KEY,
+	apiKey: process.env.AI_API_KEY,
 })

@@ -8,13 +8,13 @@ import FooterSection from '../components/layout/footer'
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-  return (
-    <div>
-      <HeroSection />
-      <Features />
-      <Workflow />
-      <CallToAction />
-      <FooterSection />
-    </div>
-  )
+	return (
+		<div>
+			<HeroSection />
+			<Features />
+			<Workflow />
+			<CallToAction />
+			<FooterSection />
+		</div>
+	)
 }
