@@ -131,12 +131,15 @@ export default function HeroSection() {
                                         Get Started
                                     </Link>
                                 </div>
-                                <a
-                                    href="#demo"
+                                <Link to="/dashboard">
+                                    <a
                                     className="inline-flex h-9 items-center justify-center rounded-xl px-5 text-base font-medium transition-colors duration-200 bg-[oklch(0.985_0.002_280)] text-[oklch(0.16_0.004_280)] hover:bg-[oklch(0.94_0.004_280)]"
-                                >
-                                    View Demo
-                                </a>
+                                    >
+                                        View Demo
+                                    </a>
+                                
+                                </Link>
+                                
                             </motion.div>
                         </div>
                     </div>
