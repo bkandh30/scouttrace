@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 
-import ThemeToggle from './ThemeToggle'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '#/lib/utils'
 import { authClient } from '@/lib/auth-client'
@@ -65,7 +64,6 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-2">
-          <ThemeToggle />
           {isPending ? null : session ? (
             <>
               <Link to="/dashboard" className={buttonVariants({ variant: 'default' })}>
