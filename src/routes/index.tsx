@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Navbar } from '../components/layout/navbar'
+import HeroSection from '../components/layout/hero-section'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-  return (
-    <div>
-      <Navbar />
-    </div>
-  )
+    return (
+        <div>
+            <HeroSection />
+        </div>
+    )
 }
