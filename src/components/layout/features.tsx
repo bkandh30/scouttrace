@@ -26,7 +26,7 @@ const features = [
 
 export default function Features() {
     return (
-        <section id="features" className="relative py-16 md:py-32">
+        <section id="features" className="relative pt-16 pb-10 md:pt-32 md:pb-20">
             <DottedBackground className="-z-[5]" />
             <div className="mx-auto max-w-5xl px-6">
                 <div className="text-center">
