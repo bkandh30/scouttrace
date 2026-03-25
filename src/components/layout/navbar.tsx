@@ -88,6 +88,7 @@ export function Navbar() {
 						<>
 							<Link
 								to="/dashboard"
+								preload={false}
 								className={buttonVariants({
 									variant: 'default',
 									size: 'sm',
@@ -166,6 +167,7 @@ export function Navbar() {
 							<>
 								<Link
 									to="/dashboard"
+									preload={false}
 									className={buttonVariants({ size: 'sm' })}
 									onClick={() => setMenuOpen(false)}
 								>

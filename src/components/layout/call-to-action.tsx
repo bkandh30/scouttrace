@@ -41,6 +41,7 @@ export default function CallToAction() {
 						<div className="rounded-[calc(var(--radius-xl)+0.125rem)] border border-border/40 bg-foreground/5 p-0.5">
 							<Link
 								to="/dashboard"
+								preload={false}
 								className={cn(
 									buttonVariants({ size: 'lg' }),
 									'gap-2 rounded-xl px-5 text-sm',

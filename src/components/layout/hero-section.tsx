@@ -133,6 +133,7 @@ export default function HeroSection() {
 								</div>
 								<Link
 									to="/dashboard"
+									preload={false}
 									className="inline-flex h-9 items-center justify-center rounded-xl px-5 text-base font-medium transition-colors duration-200 bg-[oklch(0.985_0.002_280)] text-[oklch(0.16_0.004_280)] hover:bg-[oklch(0.94_0.004_280)]"
 								>
 									View Demo
