@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
+import { useGoogleSignIn } from '@/hooks/use-google-sign-in'
 import { loginSchema } from '@/schemas/auth'
 import { toast } from 'sonner'
 import { authClient } from '@/lib/auth-client'
@@ -26,6 +27,7 @@ export function LoginForm() {
 	const navigate = useNavigate()
 	const router = useRouter()
 	const [isPending, startTransition] = useTransition()
+	const { isPending: isGooglePending, signInWithGoogle } = useGoogleSignIn()
 
 	const form = useForm({
 		defaultValues: {
@@ -105,6 +107,9 @@ export function LoginForm() {
 								type="button"
 								size="lg"
 								className="auth-social-button h-12 justify-center rounded-2xl px-4 text-sm font-medium"
+								onClick={signInWithGoogle}
+								disabled={isPending || isGooglePending}
+								aria-busy={isGooglePending}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +231,7 @@ export function LoginForm() {
 								type="submit"
 								size="lg"
 								className="auth-primary-button mt-1 h-12 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/92"
-								disabled={isPending}
+								disabled={isPending || isGooglePending}
 							>
 								{isPending ? 'Logging in...' : 'Login'}
 							</Button>
