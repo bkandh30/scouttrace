@@ -1,14 +1,13 @@
 import { createServerFn } from '@tanstack/react-start'
 import { firecrawl } from '@/lib/firecrawl'
-import { bulkImportSchema, importSchema, extractSchema } from '@/schemas/import'
-import type { ExtractData } from '@/schemas/import'
+import { bulkImportSchema, importSchema, searchSchema } from '@/schemas/import'
+import type { ExtractData, extractSchema } from '@/schemas/import'
 import { prisma } from '@/db'
 import { authFnMiddleware } from '@/middleware/auth'
 import z from 'zod'
 import { notFound } from '@tanstack/react-router'
 import { openrouter } from '@/lib/openrouter'
 import { generateText } from 'ai'
-import { searchSchema } from '@/schemas/import'
 import type { SearchResultWeb } from '@mendable/firecrawl-js'
 
 export const scrapeUrlFn = createServerFn({ method: 'POST' })
@@ -96,6 +95,7 @@ export const mapUrlFn = createServerFn({ method: 'POST' })
 export type BulkScrapeProgress = {
 	completed: number
 	total: number
+	isComplete: boolean
 	url: string
 	status: 'success' | 'failed'
 }
@@ -176,6 +176,7 @@ export const bulkScrapeUrlsFn = createServerFn({ method: 'POST' })
 			const progress: BulkScrapeProgress = {
 				completed: i + 1,
 				total: total,
+				isComplete: i + 1 >= total,
 				url: url,
 				status: status,
 			}

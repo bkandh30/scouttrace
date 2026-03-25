@@ -4,14 +4,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { FieldError } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
-import {
-	type BulkScrapeProgress,
-	bulkScrapeUrlsFn,
-	searchWebFn,
-} from '@/data/items'
+import { bulkScrapeUrlsFn, searchWebFn } from '@/data/items'
+import type { BulkScrapeProgress } from '@/data/items'
+import { getDisplayProgress } from '@/lib/progress'
 import { searchSchema } from '@/schemas/import'
 import { cn } from '@/lib/utils'
-import { type SearchResultWeb } from '@mendable/firecrawl-js'
+import type { SearchResultWeb } from '@mendable/firecrawl-js'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
 import {
@@ -116,6 +114,7 @@ function RouteComponent() {
 			setProgress({
 				completed: 0,
 				total: selectedUrls.size,
+				isComplete: false,
 				url: '',
 				status: 'success',
 			})
@@ -175,6 +174,8 @@ function RouteComponent() {
 			})
 		},
 	})
+
+	const displayProgress = progress ? getDisplayProgress(progress) : 0
 
 	return (
 		<div className="relative flex min-h-full flex-1 flex-col px-4 pt-6 pb-16 sm:px-6 lg:px-8">
@@ -377,21 +378,10 @@ function RouteComponent() {
 											{progress.total}
 										</span>
 										<span className="text-muted-foreground font-medium">
-											{Math.round(
-												(progress.completed /
-													progress.total) *
-													100,
-											)}
-											%
+											{displayProgress}%
 										</span>
 									</div>
-									<Progress
-										value={
-											(progress.completed /
-												progress.total) *
-											100
-										}
-									/>
+									<Progress value={displayProgress} />
 								</div>
 							)}
 
