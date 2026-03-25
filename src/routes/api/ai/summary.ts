@@ -34,7 +34,7 @@ export const Route = createFileRoute('/api/ai/summary')({
 					item = await prisma.savedItem.findUnique({
 						where: {
 							id: itemId,
-							userId: context?.session.user.id,
+							userId: session.user.id,
 						},
 					})
 				} catch (error) {

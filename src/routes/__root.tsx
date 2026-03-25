@@ -12,7 +12,6 @@ import { useEffect } from 'react'
 
 import { Toaster } from '@/components/ui/sonner'
 import { makeTitle } from '@/lib/seo'
-import { authClient } from '@/lib/auth-client'
 import appCss from '../styles.css?url'
 
 const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('light','dark');root.classList.add('dark');root.setAttribute('data-theme','dark');root.style.colorScheme='dark';}catch(e){}})();`
@@ -91,7 +90,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<AuthSessionBridge />
 				{children}
 				<Toaster closeButton={true} position="bottom-center" />
 				<TanStackDevtools
@@ -109,10 +107,4 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</body>
 		</html>
 	)
-}
-
-function AuthSessionBridge() {
-	authClient.useSession()
-
-	return null
 }
