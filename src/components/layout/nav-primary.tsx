@@ -8,7 +8,7 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { Link } from '@tanstack/react-router'
-import { type NavPrimaryProps } from '@/lib/types'
+import type {NavPrimaryProps} from '@/lib/types';
 
 export function NavPrimary({ items }: NavPrimaryProps) {
 	return (

@@ -30,7 +30,7 @@ import {
 	SidebarMenuButton,
 } from '@/components/ui/sidebar'
 import { Link, linkOptions } from '@tanstack/react-router'
-import { type NavPrimaryProps } from '@/lib/types'
+import type {NavPrimaryProps} from '@/lib/types';
 
 const navItems: NavPrimaryProps['items'] = linkOptions([
 	{
