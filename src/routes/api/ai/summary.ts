@@ -11,14 +11,12 @@ export const Route = createFileRoute('/api/ai/summary')({
 	server: {
 		handlers: {
 			POST: async ({ request, context }) => {
-				const session = context?.session
-				if (!session?.user?.id) {
-					return new Response(
-						'Unauthorized action. Please login first.',
-						{
-							status: 401,
-						},
-					)
+				const userId = context?.session.user.id
+
+				if (!userId) {
+					return new Response('Unauthorized action. Please login first.', {
+						status: 401,
+					})
 				}
 
 				const { itemId, prompt } = await request.json()
@@ -34,7 +32,7 @@ export const Route = createFileRoute('/api/ai/summary')({
 					item = await prisma.savedItem.findUnique({
 						where: {
 							id: itemId,
-							userId: session.user.id,
+							userId,
 						},
 					})
 				} catch (error) {

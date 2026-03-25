@@ -3,7 +3,18 @@
 import { tanstackConfig } from '@tanstack/eslint-config'
 
 export default [
-	...tanstackConfig,
+	{
+		ignores: [
+			'eslint.config.js',
+			'prettier.config.js',
+			'node_modules/**',
+			'.output/**',
+			'.tanstack/**',
+			'dist/**',
+			'build/**',
+		],
+	},
+    ...tanstackConfig,
 	{
 		rules: {
 			'import/no-cycle': 'off',
