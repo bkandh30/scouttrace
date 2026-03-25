@@ -28,6 +28,12 @@ export function NavPrimary({ items }: NavPrimaryProps) {
 											'data-active': true,
 										}}
 										to={item.to}
+										preload={
+											item.to === '/dashboard/import' ||
+											item.to === '/dashboard/discover'
+												? 'intent'
+												: false
+										}
 										activeOptions={item.activeOptions}
 									>
 										<item.icon className="!size-[18px]" />
