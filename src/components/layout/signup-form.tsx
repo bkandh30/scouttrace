@@ -15,6 +15,7 @@ import {
 	FieldError,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { useGithubSignIn } from '@/hooks/use-github-sign-in'
 import { useGoogleSignIn } from '@/hooks/use-google-sign-in'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
@@ -26,6 +27,7 @@ import { useTransition } from 'react'
 export function SignupForm() {
 	const navigate = useNavigate()
 	const [isPending, startTransition] = useTransition()
+	const { isPending: isGithubPending, signInWithGithub } = useGithubSignIn()
 	const { isPending: isGooglePending, signInWithGoogle } = useGoogleSignIn()
 
 	const form = useForm({
@@ -266,7 +268,11 @@ export function SignupForm() {
 								type="submit"
 								size="lg"
 								className="auth-primary-button mt-0.5 h-12 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/92"
-								disabled={isPending || isGooglePending}
+								disabled={
+									isPending ||
+									isGooglePending ||
+									isGithubPending
+								}
 							>
 								{isPending ? 'Creating...' : 'Create Account'}
 							</Button>
@@ -279,6 +285,13 @@ export function SignupForm() {
 									type="button"
 									size="lg"
 									className="auth-social-button h-12 justify-center rounded-2xl px-4 text-sm font-medium"
+									onClick={signInWithGithub}
+									disabled={
+										isPending ||
+										isGooglePending ||
+										isGithubPending
+									}
+									aria-busy={isGithubPending}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -296,7 +309,11 @@ export function SignupForm() {
 									size="lg"
 									className="auth-social-button h-12 justify-center rounded-2xl px-4 text-sm font-medium"
 									onClick={signInWithGoogle}
-									disabled={isPending || isGooglePending}
+									disabled={
+										isPending ||
+										isGooglePending ||
+										isGithubPending
+									}
 									aria-busy={isGooglePending}
 								>
 									<svg

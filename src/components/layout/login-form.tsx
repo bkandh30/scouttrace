@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
+import { useGithubSignIn } from '@/hooks/use-github-sign-in'
 import { useGoogleSignIn } from '@/hooks/use-google-sign-in'
 import { loginSchema } from '@/schemas/auth'
 import { toast } from 'sonner'
@@ -27,6 +28,7 @@ export function LoginForm() {
 	const navigate = useNavigate()
 	const router = useRouter()
 	const [isPending, startTransition] = useTransition()
+	const { isPending: isGithubPending, signInWithGithub } = useGithubSignIn()
 	const { isPending: isGooglePending, signInWithGoogle } = useGoogleSignIn()
 
 	const form = useForm({
@@ -91,6 +93,13 @@ export function LoginForm() {
 								type="button"
 								size="lg"
 								className="auth-social-button h-12 justify-center rounded-2xl px-4 text-sm font-medium"
+								onClick={signInWithGithub}
+								disabled={
+									isPending ||
+									isGooglePending ||
+									isGithubPending
+								}
+								aria-busy={isGithubPending}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +117,11 @@ export function LoginForm() {
 								size="lg"
 								className="auth-social-button h-12 justify-center rounded-2xl px-4 text-sm font-medium"
 								onClick={signInWithGoogle}
-								disabled={isPending || isGooglePending}
+								disabled={
+									isPending ||
+									isGooglePending ||
+									isGithubPending
+								}
 								aria-busy={isGooglePending}
 							>
 								<svg
@@ -231,7 +244,11 @@ export function LoginForm() {
 								type="submit"
 								size="lg"
 								className="auth-primary-button mt-1 h-12 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/92"
-								disabled={isPending || isGooglePending}
+								disabled={
+									isPending ||
+									isGooglePending ||
+									isGithubPending
+								}
 							>
 								{isPending ? 'Logging in...' : 'Login'}
 							</Button>
